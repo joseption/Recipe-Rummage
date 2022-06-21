@@ -1,4 +1,1 @@
-# poosd
-# bigpoosd
-# bigpoosd
 # bigpoosd
