@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { config } from '../Constants'
 
 function Login()
 {
@@ -16,7 +17,7 @@ function Login()
 
         try
         {    
-            const response = await fetch('http://localhost:5000/api/login',
+            const response = await fetch(`${config.URL}/api/login`,
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             let res = JSON.parse(await response.text());
