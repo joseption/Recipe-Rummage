@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { config } from '../Constants'
 
 function ItemUI()
 {
@@ -24,7 +25,7 @@ function ItemUI()
 
         try
         {
-            const response = await fetch('http://localhost:5000/api/additem',
+            const response = await fetch(`${config.URL}/api/additem`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             let txt = await response.text();
@@ -55,7 +56,7 @@ function ItemUI()
 
         try
         {
-            const response = await fetch('http://localhost:5000/api/searchitems',
+            const response = await fetch(`${config.URL}/api/searchitems`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             let txt = await response.text();
