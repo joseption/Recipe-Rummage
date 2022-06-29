@@ -8,8 +8,7 @@
         "server": "nodemon server.js",
         "client": "cd frontend && npm start && cd ..",
         "start": "concurrently \"npm run server\" \"npm run client\"",
-        "install": "cd frontend && npm i && cd .. && npm i",
-        "i": "cd frontend && npm i && cd .. && npm i"
+        "setup": "cd frontend && npm i && cd .. && npm i"
     },
     "author": "",
     "license": "ISC",
