@@ -23,7 +23,7 @@ const LoginPage = (props) =>
           <div className="login-content">
             <div ref={content} className="login-workflow-content">
             <Login setScreen={setScreen} />
-            {/* <ForgotPassword setScreen={setScreen} /> */}
+            {/* <ForgotPassword setScreen={setScreen} />    uncomment when working on ForgotPassword.js */}
             </div>
           </div>
         </div>
