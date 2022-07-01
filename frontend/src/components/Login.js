@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { config } from '../Constants'
 
-function Login()
+function Login(props)
 {
     var email;
     var loginPassword;
 
-    const [message,setMessage] = useState('');
+    const [message, setMessage] = useState('');
 
     const doLogin = async event => 
     {
@@ -42,21 +42,30 @@ function Login()
         }    
     };
 
-
-
     return(
-      <div id="loginDiv">
-        <form onSubmit={doLogin}>
-        <span id="inner-title">Please Log in</span><br />
-        <input type="text" id="email" placeholder="example@example.com" 
-            ref={(c) => email = c} /> <br />
-        <input type="password" id="loginPassword" placeholder="Password" 
-            ref={(c) => loginPassword = c} /> <br />
-        <input type="submit" id="loginButton" class="buttons" value = "Login"
-          onClick={doLogin} />
-        </form>
-        <span id="loginResult">{message}</span>
-     </div>
+        <div>
+            <form className="login-form" onSubmit={doLogin}>
+            <div class="login-title-container">
+                <span className="login-title">Welcome</span>
+            </div>
+            <div className="login-input-container">
+                <div className="login-input-header">Email</div>
+                <input type="text" id="email" ref={(c) => email = c} />
+            </div>
+            <div className="login-input-container">
+                <div className="login-input-header">Password</div>
+                <input type="password" id="loginPassword" ref={(c) => loginPassword = c} />
+                <div className="login-forgot-password link" onClick={() => props.setScreen("password")}>Forgot Password?</div>
+            </div>
+            <input type="submit" className="login-login-btn btn btn-success" value="Login" onClick={doLogin} />
+            </form>
+            <div className="login-error-msg">{message}</div>
+            <hr className="splitter" />
+            <div className="login-register-container">
+                <div className="login-register-title">New around here?</div>
+                <div className="btn btn-primary" onClick={() => props.setScreen("register")}>Register</div>
+            </div>
+        </div>
     );
 };
 
