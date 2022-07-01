@@ -8,6 +8,20 @@ function Login(props)
 
     const [message, setMessage] = useState('');
 
+    const app_name = 'pantry-cop4331'
+    function buildPath(route)
+    {
+        if (process.env.NODE_ENV === 'production') 
+        {
+            return 'https://' + app_name +  '.herokuapp.com/' + route;
+        }
+        else
+        {        
+            return 'http://localhost:5000/' + route;
+        }
+    }
+
+
     const doLogin = async event => 
     {
         event.preventDefault();

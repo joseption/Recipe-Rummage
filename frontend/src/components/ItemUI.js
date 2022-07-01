@@ -16,6 +16,20 @@ function ItemUI()
     let firstName = ud.firstName;
     let lastName = ud.lastName;
 
+    const app_name = 'pantry-cop4331'
+    function buildPath(route)
+    {
+        if (process.env.NODE_ENV === 'production') 
+        {
+            return 'https://' + app_name +  '.herokuapp.com/' + route;
+        }
+        else
+        {        
+            return 'http://localhost:5000/' + route;
+        }
+    }
+
+
     const addItem = async event => 
     {
 	    event.preventDefault();
@@ -25,7 +39,7 @@ function ItemUI()
 
         try
         {
-            const response = await fetch(`${config.URL}/api/additem`,
+            const response = await fetch(buildPath('api/additem'),
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             let txt = await response.text();
@@ -56,8 +70,9 @@ function ItemUI()
 
         try
         {
-            const response = await fetch(`${config.URL}/api/searchitems`,
+            const response = await fetch(buildPath('api/searchitems'),
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
+
 
             let txt = await response.text();
             let res = JSON.parse(txt);
