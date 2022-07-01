@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { config } from '../Constants'
+//import { config } from '../Constants'
 
 function Login(props)
 {
-    var email;
+    var loginEmail;
     var loginPassword;
 
     const [message, setMessage] = useState('');
@@ -26,27 +26,26 @@ function Login(props)
     {
         event.preventDefault();
 
-        let obj = {email:email.value,password:loginPassword.value};
+        let obj = {email:loginEmail.value,password:loginPassword.value};
         let js = JSON.stringify(obj);
 
         try
         {    
-            const response = await fetch(`${config.URL}/api/login`,
-                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
+            const response = await fetch(buildPath('api/login'),{method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             let res = JSON.parse(await response.text());
 
-            if( res._id <= 0 )
+            if( res.user_id <= 0 )
             {
                 setMessage('User/Password combination incorrect');
             }
             else
             {
-                let user = {email:res.firstName,lastName:res.lastName,user_id:res.id}  //original
+                let user = {firstName:res.firstName,lastName:res.lastName,user_id:res.user_id}  //original
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                window.location.href = '/item';
+                window.location.href = '/items';
             }
         }
         catch(e)
@@ -64,7 +63,7 @@ function Login(props)
             </div>
             <div className="login-input-container">
                 <div className="login-input-header">Email</div>
-                <input type="text" id="email" ref={(c) => email = c} />
+                <input type="text" id="loginEmail" ref={(c) => loginEmail = c} />
             </div>
             <div className="login-input-container">
                 <div className="login-input-header">Password</div>

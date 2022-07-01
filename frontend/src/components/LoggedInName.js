@@ -5,7 +5,7 @@ function LoggedInName()
 	
     let _ud = localStorage.getItem('user_data');
     let ud = JSON.parse(_ud);
-    let _id = ud._id;
+    let user_id = ud.user_id;
     let firstName = ud.firstName;
     let lastName = ud.lastName;
 
@@ -20,7 +20,7 @@ function LoggedInName()
 
   return(
    <div id="loggedInDiv">
-   <span id="userName">Logged In As {firstName} {lastName}</span><br />
+   <span id="userName">Logged In As {firstName} {lastName} {user_id}</span><br />
    <button type="button" id="logoutButton" class="buttons" 
      onClick={doLogout}> Log Out </button>
    </div>

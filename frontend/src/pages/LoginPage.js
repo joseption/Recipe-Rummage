@@ -23,7 +23,7 @@ const LoginPage = (props) =>
           <div className="login-content">
             <div ref={content} className="login-workflow-content">
             <Login setScreen={setScreen} />
-            <ForgotPassword setScreen={setScreen} />
+            {/* <ForgotPassword setScreen={setScreen} /> */}
             </div>
           </div>
         </div>
@@ -32,3 +32,21 @@ const LoginPage = (props) =>
 };
 
 export default LoginPage;
+
+// import React from 'react';
+
+// import PageTitle from '../components/PageTitle';
+// import Login from '../components/Login';
+
+// const LoginPage = () =>
+// {
+
+//     return(
+//       <div>
+//         <PageTitle />
+//         <Login />
+//       </div>
+//     );
+// };
+
+// export default LoginPage;

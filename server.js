@@ -140,13 +140,12 @@ app.post('/api/login', async (req, res, next) =>
 
   if( results.length > 0 )
   {
-    //fields need to be added to mongodb
-    id = results[0].user_id;
+    id = results[0].userId;
     fn = results[0].firstName;
     ln = results[0].lastName;
   }
 
-  let ret = { id:id, firstName:fn, lastName:ln, error:''};
+  let ret = { user_id:id, firstName:fn, lastName:ln, error:''};
   res.status(200).json(ret);
 });
 
