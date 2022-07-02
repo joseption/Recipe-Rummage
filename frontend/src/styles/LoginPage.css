@@ -24,14 +24,12 @@
 .login-workflow-content {
     display: flex;
     gap: 80px;
-    margin-left: 20px;
     transition: transform .15s ease;
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
 }
 
@@ -44,6 +42,7 @@
     padding-bottom: 1em;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .login-navigate-btn {
@@ -116,5 +115,52 @@ input[type=password] {
 
 .login-forgot-msg {
     text-align: center;
-    margin-bottom: 2em;
+    margin: 2em 0;
+}
+
+.login-workflow-content>div {
+    min-width: 100%;
+}
+
+.login-reset-sent-title {
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+    text-align: center;
+}
+
+.login-reset-resend-title {
+    margin-bottom: 0.5em;
+    margin-top: 2em;
+    text-align: center;
+    font-style: italic;
+}
+
+.login-timer {
+    font-size: 12px;
+    text-align: center;
+    padding-top: 0.5em;
+}
+
+.login-password-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.login-password-hint-container {
+    text-align: left;
+    padding-top: 0.25em;
+    width: 310px;
+}
+
+.login-password-update-title {
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    text-align: center;
+}
+
+.login-password-updated-title {
+    margin-top: 7em;
+    margin-bottom: 0.75em;
+    text-align: center;
 }

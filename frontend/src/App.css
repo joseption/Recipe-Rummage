@@ -79,4 +79,23 @@
 .splitter {
   border: none;
   border-top: solid 1px var(--color-border);
+  width: 100%;
+}
+
+.input-title-error {
+  color: var(--color-warning-accent) !important;
+}
+
+.input-error {
+  border: solid 2px var(--color-warning-accent) !important;
+}
+
+.btn-success:disabled,
+.btn-primary:disabled,
+.btn-warning:disabled,
+.btn-danger:disabled {
+  cursor: not-allowed;
+  background-color: lightgray;
+  color: gray;
+  user-select: none;
 }
