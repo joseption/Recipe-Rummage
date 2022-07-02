@@ -1,0 +1,125 @@
+.recipe-edit,
+.recipe-update {
+    color: var(--color-success);
+}
+
+.recipe-edit:hover,
+.recipe-update:hover {
+    color: var(--color-success-accent);
+}
+
+.recipe-remove,
+.recipe-cancel {
+    color: var(--color-danger);
+}
+
+.recipe-remove:hover,
+.recipe-cancel:hover {
+    color: var(--color-danger-accent);
+}
+
+.recipe-like {
+    color: var(--color-primary);
+}
+
+.recipe-like:hover {
+    color: var(--color-primary-accent);
+}
+
+.recipe-card:hover {
+    background-color: var(--color-hover);
+}
+
+.recipe-card {
+    background-color: var(--color-background-secondary);
+    padding: 10px;
+    border-radius: 4px;
+    flex-direction: row;
+    gap: 10px;
+    display: flex;
+    max-height: 300px;
+    transition: background-color .15s ease;
+}
+
+.recipe-title {
+    font-weight: bold;
+}
+
+.recipe-btn-container {
+    display: flex;
+    gap: 5px;
+}
+
+.recipe-btn {
+    background-color: white;
+    border-radius: 50px;
+    font-size: 1.15em;
+    width: 27px;
+    height: 27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+.recipe-btn:hover {
+    background-color: var(--color-background-secondary);
+}
+
+.recipe-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recipe-image {
+    width: 70px;
+    background-color: white;
+    height: 70px;
+    min-width: 70px;
+    min-height: 70px;
+}
+
+.recipe-button-content {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.recipe-title-content,
+.recipe-desc-content {
+    display: flex;
+    width: 100%;
+}
+
+.recipe-desc-content {
+    padding-top: 10px;
+}
+
+textarea {
+    outline: none;
+    width: calc(100% - 10px);
+    display: flex;
+    font-size: 1.25em;
+    padding: 5px;
+    resize: vertical;
+    max-height: 125px;
+    min-height: 25px;
+    border: solid 1px var(--color-border);
+    border-radius: 4px;
+}
+
+.recipe-content {
+    overflow: hidden;
+    width: 100%;
+}
+
+.recipe-desc-edit {
+    height: 100vh;
+}
+
+.recipe-title-edit {
+    height: 25px;
+}

@@ -9,6 +9,8 @@
     --color-link-accent: rgb(86, 171, 255);
     --color-white-20: #ffffff4f;
     --color-white-60: #ffffff94;
-    --color-warning: darkred;
-    --color-warning-accent: red;
+    --color-danger: darkred;
+    --color-danger-accent: red;
+    --color-background-secondary: #F5F5F5;
+    --color-hover: #1e8fff1b;
 }

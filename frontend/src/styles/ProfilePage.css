@@ -1,0 +1,7 @@
+.profile-grocery-list {
+    flex: .33
+}
+
+.profile-recipe-list {
+    flex: 1;
+}
