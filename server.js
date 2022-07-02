@@ -55,18 +55,57 @@ app.post('/api/login', async (req, res, next) =>
   {
 
     let id = results[0]._id;
-    res.status(200).json({ id:id, error:''});
+    let user_id = results[0].user_id;
+    res.status(200).json({ id:id, user_id, email:email, error:''});
   }
   else {
     res.status(400).json({ error:'The username or password did not match' });
   }
 });
 
+app.post('/api/register', async (req, res, next) =>
+{
+  // incoming: email
+  // outgoing: sent email
+	
+  const { email } = req.body;
+  const activate_id = uuid();
+  const newItem = {email:email, active:false, activate_id:activate_id};
+
+  try
+  {
+    const db = client.db("LargeProject");
+    db.collection('User').insertOne(newItem);
+      const sgMail = require('@sendgrid/mail');
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    
+      const msg = {
+        to: req.body.email,
+        from: 'support@joseption.com',
+        subject: 'Account Activation',
+        html: 'Hey there, thank you for your interest in finding some awesome recipes! Let\'s finish getting your account setup.<br /><br />Please click the following link to activate your account: ' + process.env.URL + "/login?activate_id=" + activate_id,
+      };
+    
+      let hasError = false;
+      sgMail.send(msg).catch(err => {
+        hasError = true;
+        res.status(400).json({error:'Unable to send reset email'});
+        return;
+      });  
+  }
+  catch(e)
+  {
+    res.status(400).json({error: 'Error: ' + e});
+  }
+
+  res.status(200).json({error:''});
+});
+
 app.post('/api/update-password', async (req, res, next) => 
 {
   // incoming: reset id, password
 
-  const { reset_id, password, passwordVerify } = req.body;
+  const { type, password_id, password, passwordVerify } = req.body;
 
   if (!validatePassword(password, passwordVerify)) {
     res.status(400).json({error:'Password does not meet the minimum requirements'});
@@ -76,10 +115,19 @@ app.post('/api/update-password', async (req, res, next) =>
   // TO DO PASSWORD MUST BE HASHED!!
 
   const db = client.db("LargeProject");
-  const results = await db.collection('User').find({reset_id}).toArray();
+  let find;
+  if (type == 'reset')
+  find = {reset_id: password_id};  
+  else if (type == 'activate')
+  find = {activate_id: password_id}; 
+  else {
+    res.status(400).json({error: 'Invalid update type, password could not be changed'});
+    return;
+  }
+  const results = await db.collection('User').find(find).toArray();
 
   let user_id = -1;
-  let id = "";
+  let id;
   let active = false;
 
   if (results.length > 0)
@@ -89,14 +137,23 @@ app.post('/api/update-password', async (req, res, next) =>
     active = results[0].active;
   }
 
-  if (user_id > -1) {
-    if (active !== true) {
+  if (id) {
+    if (active !== true && type == 'reset') {
       res.status(400).json({error:'Unable to reset password, check your email for the account activation link first'});
       return;
     }
 
     const filter = { "_id": ObjectId(id)};
-    const update = { $set: { reset_id: '', password: password } };  
+    let update;
+    if (type == 'reset')
+      update = { $set: { reset_id: '', password: password } };  
+    else if (type == 'activate')
+      update = { $set: { activate_id: '', password: password, active: true } };  
+    else {
+      res.status(400).json({error: 'Invalid update type, password could not be changed'});
+      return;
+    }
+
     try
     {
       const db = client.db("LargeProject");
@@ -130,7 +187,7 @@ app.post('/api/send-password-reset', async (req, res, next) =>
 
   let reset_id = "";
   let user_id = -1;
-  let id = "";
+  let id;
   let active = false;
 
   if (results.length > 0)
@@ -142,7 +199,7 @@ app.post('/api/send-password-reset', async (req, res, next) =>
     active = results[0].active;
   }
 
-  if (user_id > -1) {
+  if (id) {
     if (active !== true) {
       res.status(400).json({error:'Unable to reset password, check your email for the account activation link first'});
       return;
@@ -153,16 +210,16 @@ app.post('/api/send-password-reset', async (req, res, next) =>
     try
     {
       const db = client.db("LargeProject");
-      const result = db.collection('User').updateOne(filter, update);
+      db.collection('User').updateOne(filter, update);
 
       const sgMail = require('@sendgrid/mail');
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     
       const msg = {
         to: req.body.email,
-        from: 'myrecipecrawler@gmail.com',
+        from: 'support@joseption.com',
         subject: 'Reset Account Password',
-        html: 'Please click the following link to reset your account password: ' + process.env.URL + "/login?reset_id=" + reset_id,
+        html: 'We noticed you\'re having some trouble logging in, sorry about that! Let\'s see if we can get you logged back in.<br /><br />Please click the following link to reset your account password: ' + process.env.URL + "/login?reset_id=" + reset_id,
       };
     
       let hasError = false;

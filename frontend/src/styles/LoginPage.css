@@ -164,3 +164,12 @@ input[type=password] {
     margin-bottom: 0.75em;
     text-align: center;
 }
+
+.login-register-email {
+    padding-top: 2em;
+}
+
+.login-register-msg {
+    margin-top: 2em;
+    text-align: center;
+}
