@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Navigate, Route } from 'react-router-dom';
 import { config } from '../Constants'
 import { validateEmail } from '../Helper';
 
@@ -63,8 +64,7 @@ function Login(props)
                     localStorage.setItem('user_data', JSON.stringify(user));
 
                     setMessage('');
-                    //THIS WILL BE REPLACED
-                    window.location.href = '/item';
+                    window.location.href = "/profile";
                 }
             });
         }
