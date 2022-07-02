@@ -17,17 +17,16 @@ const validatePassword = (password, passwordVerify) => {
   return symbol && upperCase && length && match;
 };
 
-require("dotenv").config({path:'./.env'});
+
 const { 
   v1: uuidv1,
   v4: uuid
 } = require('uuid');
 
 const MongoClient = require('mongodb').MongoClient;
-
 const {ObjectId} = require('mongodb');
 
-const {ObjectId} = require('mongodb');
+
 
 require('dotenv').config();
 const url = process.env.MONGODB_URI;
@@ -42,6 +41,7 @@ app.set('port', (process.env.PORT || 5000));
 
 app.use(cors());
 app.use(bodyParser.json());
+
 
 app.post('/api/login', async (req, res, next) => 
 {
