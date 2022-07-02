@@ -83,11 +83,11 @@
 }
 
 .input-title-error {
-  color: var(--color-warning-accent) !important;
+  color: var(--color-danger-accent) !important;
 }
 
 .input-error {
-  border: solid 2px var(--color-warning-accent) !important;
+  border: solid 2px var(--color-danger-accent) !important;
 }
 
 .btn-success:disabled,
@@ -98,4 +98,14 @@
   background-color: lightgray;
   color: gray;
   user-select: none;
+}
+
+.main-content-container {
+  width: 1000px;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: auto;
+  gap: 40px;
 }

@@ -5,10 +5,18 @@ import Navigation from '../components/Navigation';
 
 const ProfilePage = (props) =>
 {
-
     return(
-        <div>
-            Profile Page!
+        <div className="main-page-container">
+            <Navigation />
+            
+            <div className="main-content-container">
+                <div className="profile-grocery-list">
+                    <GroceryList mode={"profile"} />
+                </div>
+                <div className="profile-recipe-list">
+                    <RecipeList mode={"profile"} />
+                </div>
+            </div>
         </div>
     );
 };

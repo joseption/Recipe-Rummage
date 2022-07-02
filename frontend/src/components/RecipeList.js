@@ -6,7 +6,7 @@ const RecipeList = (props) =>
 
     return(
         <div>
-            Recipe List!
+            <RecipeItem mode={props.mode} />
         </div>
     );
 };
