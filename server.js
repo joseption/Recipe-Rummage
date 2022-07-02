@@ -13,7 +13,7 @@ const validatePassword = (password, passwordVerify) => {
   let symbol = /[!@#$%&?]/.test(password);
   let upperCase = /[A-Z]/.test(password);
   let length = password.length >= 8;
-  let match = password == passwordVerify && password && passwordVerify;
+  let match = password === passwordVerify && password && passwordVerify;
   return symbol && upperCase && length && match;
 };
 
@@ -26,9 +26,7 @@ const {
 const MongoClient = require('mongodb').MongoClient;
 const {ObjectId} = require('mongodb');
 
-
-
-require('dotenv').config();
+require('dotenv').config({path: './.env'});
 const url = process.env.MONGODB_URI;
 const client = new MongoClient(url);
 client.connect();
@@ -46,26 +44,22 @@ app.use(bodyParser.json());
 app.post('/api/login', async (req, res, next) => 
 {
   // incoming: email, password
-  // outgoing: id, firstName, lastName, error
+  // outgoing: id, error
 
   const { email, password } = req.body;
 
   const db = client.db("LargeProject");
   const results = await db.collection('User').find({email:email,password:password}).toArray();
-
-  let id = -1;
-  let fn = '';
-  let ln = '';
-
-  if( results.length > 0 )
+  
+  if (results.length > 0)
   {
-    id = results[0].userId;
-    fn = results[0].firstName;
-    ln = results[0].lastName;
-  }
 
-  let ret = { user_id:id, firstName:fn, lastName:ln, error:''};
-  res.status(200).json(ret);
+    let id = results[0]._id;
+    res.status(200).json({ id:id, error:''});
+  }
+  else {
+    res.status(400).json({ error:'The username or password did not match' });
+  }
 });
 
 app.post('/api/update-password', async (req, res, next) => 
@@ -171,8 +165,16 @@ app.post('/api/send-password-reset', async (req, res, next) =>
         html: 'Please click the following link to reset your account password: ' + process.env.URL + "/login?reset_id=" + reset_id,
       };
     
-      sgMail.send(msg);
-      res.status(200).json({error:''});
+      let hasError = false;
+      sgMail.send(msg).catch(err => {
+        hasError = true;
+        res.status(400).json({error:'Unable to send reset email'});
+        return;
+      });        
+
+      if (!hasError) {
+        res.status(200).json({error:''});
+      }
     }
     catch(e)
     {

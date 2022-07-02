@@ -76,6 +76,7 @@ function SetPassword(props)
 
             if(res.error)
             {
+                console.log(res.error);
                 props.setError([{el:pw, isError:true}, {el:pwv, isError:true}]);
                 setMessage(res.error);
             }
