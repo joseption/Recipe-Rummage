@@ -77,7 +77,7 @@ const LoginPage = (props) =>
         <div className="login-container">
           <div className="login-content">
             <div ref={content} className="login-workflow-content">
-            <Login setScreen={setScreen} />
+            <Login setError={setError} setScreen={setScreen} />
             <ForgotPassword setEmail={setEmail} setError={setError} setScreen={setScreen} />
             <PasswordSent email={email} setScreen={setScreen} />
             <SetPassword setError={setError} isPasswordReset={isPasswordReset} passwordID={passwordID} setScreen={setScreen} />
