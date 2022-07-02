@@ -103,13 +103,13 @@ function ItemUI()
         <br />
         <input type="text" id="searchText" placeholder="Item To Search For" 
             ref={(c) => search = c} />
-        <button type="button" id="searchItemButton" class="buttons" 
+        <button type="button" id="searchItemButton" className="buttons" 
             onClick={searchItem}> Search Item</button><br />
         <span id="itemSearchResult">{searchResults}</span>
         <p id="itemList">{itemList}</p><br /><br />
         <input type="text" id="itemText" placeholder="item To Add" 
             ref={(c) => item = c} />
-        <button type="button" id="addItemButton" class="buttons" 
+        <button type="button" id="addItemButton" className="buttons" 
             onClick={addItem}> Add Item </button><br />
         <span id="itemAddResult">{message}</span>
         </div>

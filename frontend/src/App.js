@@ -10,7 +10,7 @@ function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path="/" index element={<LoginPage />} />
+      <Route path="/login" index element={<LoginPage />} />
       <Route path="/Items" index element={<ItemPage />} />
     </Routes>
   </BrowserRouter>

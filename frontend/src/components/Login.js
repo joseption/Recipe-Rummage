@@ -1,51 +1,38 @@
 import React, { useState } from 'react';
-//import { config } from '../Constants'
+import { config } from '../Constants'
 
 function Login(props)
 {
-    var loginEmail;
+    var email;
     var loginPassword;
 
     const [message, setMessage] = useState('');
-
-    const app_name = 'pantry-cop4331'
-    function buildPath(route)
-    {
-        if (process.env.NODE_ENV === 'production') 
-        {
-            return 'https://' + app_name +  '.herokuapp.com/' + route;
-        }
-        else
-        {        
-            return 'http://localhost:5000/' + route;
-        }
-    }
-
 
     const doLogin = async event => 
     {
         event.preventDefault();
 
-        let obj = {email:loginEmail.value,password:loginPassword.value};
+        let obj = {email:email.value,password:loginPassword.value};
         let js = JSON.stringify(obj);
 
         try
         {    
-            const response = await fetch(buildPath('api/login'),{method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
+            const response = await fetch(`${config.URL}/api/login`,
+                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 
             let res = JSON.parse(await response.text());
 
-            if( res.user_id <= 0 )
+            if( res._id <= 0 )
             {
                 setMessage('User/Password combination incorrect');
             }
             else
             {
-                let user = {firstName:res.firstName,lastName:res.lastName,user_id:res.user_id}  //original
+                let user = {email:res.firstName,lastName:res.lastName,user_id:res.id}  //original
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                window.location.href = '/items';
+                window.location.href = '/item';
             }
         }
         catch(e)
@@ -58,17 +45,17 @@ function Login(props)
     return(
         <div>
             <form className="login-form" onSubmit={doLogin}>
-            <div class="login-title-container">
+            <div className="login-title-container">
                 <span className="login-title">Welcome</span>
             </div>
             <div className="login-input-container">
                 <div className="login-input-header">Email</div>
-                <input type="text" id="loginEmail" ref={(c) => loginEmail = c} />
+                <input type="text" ref={(c) => email = c} />
             </div>
             <div className="login-input-container">
                 <div className="login-input-header">Password</div>
-                <input type="password" id="loginPassword" ref={(c) => loginPassword = c} />
-                <div className="login-forgot-password link" onClick={() => props.setScreen("password")}>Forgot Password?</div>
+                <input type="password" ref={(c) => loginPassword = c} />
+                <div className="login-forgot-password link" onClick={() => props.setScreen("forgot_password")}>Forgot Password?</div>
             </div>
             <input type="submit" className="login-login-btn btn btn-success" value="Login" onClick={doLogin} />
             </form>
