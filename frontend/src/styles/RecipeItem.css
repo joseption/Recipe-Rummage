@@ -102,7 +102,6 @@ textarea {
     outline: none;
     width: calc(100% - 10px);
     display: flex;
-    font-size: 1.25em;
     padding: 5px;
     resize: vertical;
     max-height: 125px;

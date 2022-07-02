@@ -1,0 +1,29 @@
+.recipe-list-items>.recipe-card {
+    margin: 10px 0;
+}
+
+.recipe-list-search {
+    font-size: 1.25em;
+    width: calc(100% - 20px);
+    padding: 10px;
+    border-radius: 4px;
+    outline: none;
+    border: solid 1px var(--color-border);
+    margin: 15px 0;
+}
+
+.recipe-list-title {
+    font-weight: bold;
+    font-size: 1.25em;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.recipe-list-items {
+    max-height: 1000px;
+    overflow: auto;
+}
+
+.recipe-list-items::-webkit-scrollbar {
+    background: var(--color-white);
+  }
