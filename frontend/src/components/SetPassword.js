@@ -61,9 +61,9 @@ function SetPassword(props)
         props.setError([{el:pw, isError:false}, {el:pwv, isError:false}]);
         let obj;
         if (props.isPasswordReset)
-            obj = {reset_id:props.passwordID, password:loginPassword.value, passwordVerify:loginPasswordVerify.value};
+            obj = {type:'reset', password_id:props.passwordID, password:loginPassword.value, passwordVerify:loginPasswordVerify.value};
         else
-            obj = {active:true, activate_id:props.passwordID, password:loginPassword.value, passwordVerify:loginPasswordVerify.value};
+            obj = {type:'activate', password_id:props.passwordID, password:loginPassword.value, passwordVerify:loginPasswordVerify.value};
 
         let js = JSON.stringify(obj);
 
@@ -76,7 +76,6 @@ function SetPassword(props)
 
             if(res.error)
             {
-                console.log(res.error);
                 props.setError([{el:pw, isError:true}, {el:pwv, isError:true}]);
                 setMessage(res.error);
             }

@@ -20,7 +20,9 @@ function ForgotPassword(props)
     };
 
     const handleChange = (e) => {
-        setDisabled(!validateEmail(e.target.value) ? true : false);
+        var error = !validateEmail(e.target.value) ? true : false;
+        props.setError([{el:emailForm, isError:error}]);
+        setDisabled(error);
     };
 
     const doSendEmail = async event => 

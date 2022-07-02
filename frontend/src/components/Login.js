@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { config } from '../Constants'
 import { validateEmail } from '../Helper';
 
@@ -7,14 +7,7 @@ function Login(props)
     var email;
     var loginPassword;
 
-    const [disabled, setDisabled] = useState('');
-    const [message, setMessage] = useState('');
-
-    useEffect(() => {
-        setDisabled(true);
-    }, [setDisabled]);
-
-    const checkDisabledBtn = (type) => {
+    const checkDisabledBtn = useCallback((type) => {
         let emailError = !(validateEmail(email.value));
         let passwordError = loginPassword.value.length === 0;
         if (type === 'email')
@@ -24,10 +17,26 @@ function Login(props)
 
         setDisabled(emailError || passwordError);
         return emailError || passwordError;
-    };
+    });
+
+    const [disabled, setDisabled] = useState('');
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        checkDisabledBtn(email);
+        checkDisabledBtn(loginPassword);
+    }, [email, loginPassword, checkDisabledBtn]);
 
     const handleChange = (type) => {
         checkDisabledBtn(type);
+    };
+
+    const showScreen = (screen) => {
+        email.value = "";
+        loginPassword.value = "";
+        setDisabled(true);
+        props.setError([{el:email, isError:false}, {el:loginPassword, isError:false}]);
+        props.setScreen(screen);
     };
 
     const doLogin = async event => 
@@ -50,7 +59,7 @@ function Login(props)
                 }
                 else
                 {
-                    let user = {id:res.id}
+                    let user = {id:res.id, user_id:res.user_id, email:res.email};
                     localStorage.setItem('user_data', JSON.stringify(user));
 
                     setMessage('');
@@ -79,7 +88,7 @@ function Login(props)
             <div className="login-input-container">
                 <div className="login-input-header">Password</div>
                 <input type="password" onChange={(e) => {handleChange('password')}} ref={(c) => loginPassword = c} />
-                <div className="login-forgot-password link" onClick={() => props.setScreen("forgot_password")}>Forgot Password?</div>
+                <div className="login-forgot-password link" onClick={() =>showScreen("forgot_password")}>Forgot Password?</div>
             </div>
             <input type="submit" disabled={disabled} className="login-login-btn btn btn-success" value="Login" onClick={doLogin} />
             </form>
@@ -87,7 +96,7 @@ function Login(props)
             <hr className="splitter" />
             <div className="login-register-container">
                 <div className="login-register-title">New around here?</div>
-                <div className="btn btn-primary" onClick={() => props.setScreen("register")}>Register</div>
+                <div className="btn btn-primary" onClick={() => showScreen("register")}>Register</div>
             </div>
         </div>
     );

@@ -21,6 +21,13 @@ function PasswordSent(props)
                     setTime(0);
                 }
                 else {
+                    if (message) {
+                        clearInterval(interval);
+                        setTime(0);
+                        setCounter("");
+                        setDisabled(false);
+                        return;
+                    }
                     setCounter("Try again in " + Math.abs(Math.round(60 - ((Date.now() - time) / 1000))) + " seconds");
                     setDisabled(true);
                 }
@@ -33,7 +40,7 @@ function PasswordSent(props)
             setTime(0);
             setDisabled(false);
         }
-    }, [disabled, time]);
+    }, [disabled, time, message]);
 
     const disableBtn = (disable) => {
         if (disable)
@@ -49,6 +56,12 @@ function PasswordSent(props)
         event.preventDefault();
         disableBtn(true);
         setMessage("");
+        if (!props.email) {
+            setMessage("You must use a valid email address");
+            disableBtn(false);
+            return;
+        }
+        
         let obj = {email:props.email};
         let js = JSON.stringify(obj);
 
