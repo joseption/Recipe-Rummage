@@ -14,7 +14,7 @@ const ProfilePage = (props) =>
                     <GroceryList mode={"profile"} />
                 </div>
                 <div className="profile-recipe-list">
-                    <RecipeList mode={"profile"} />
+                    <RecipeList searchPlaceHolder={"Find My Recipe"} title={"My Recipes"} mode={"profile"} />
                 </div>
             </div>
         </div>

@@ -33,6 +33,7 @@ function Login(props)
     };
 
     const showScreen = (screen) => {
+        setMessage("");
         email.value = "";
         loginPassword.value = "";
         setDisabled(true);
