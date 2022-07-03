@@ -2,13 +2,24 @@ import '../styles/GroceryList.css';
 import GroceryItem from '../components/GroceryItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { useState } from 'react';
 
 const GroceryList = (props) =>
 {
+    const [checked,setChecked] = useState(false);
+    const toggleItems = (e) => {
+        setChecked(!checked);
+        if (checked) {
+            // to do show only added items
+        }
+        else {
+            // to do show all items
+        }
+    }
 
     return(
         <div>
-            <div className="grocery-list-title">{props.title}</div>
+            <div className="grocery-list-title">My Pantry</div>
             <div>
                 <div>
                     <div>
@@ -20,7 +31,7 @@ const GroceryList = (props) =>
                                 </div>
                             </div>)
                             :
-                            (<div className="btn btn-success grocery-list-search-btn"></div>)
+                            (<div className="btn btn-success grocery-list-search-btn">Find Recipes</div>)
                         }
                     </div>
                     <div className="error-msg grocery-list-error-msg"></div>
@@ -29,8 +40,8 @@ const GroceryList = (props) =>
             <hr className="splitter" />
             <div className="grocery-list-search-container">
                 {props.mode !== "profile" ?
-                (<label className="check-container">Show Only Added Items
-                    <input type="checkbox" checked="checked" />
+                (<label className="grocery-list-check check-container">Show Only Added Items
+                    <input type="checkbox" onChange={(e) => toggleItems(e)} checked={checked} />
                     <span className="check-checkmark"></span>
                 </label>) : null}
                 <div>
@@ -38,6 +49,7 @@ const GroceryList = (props) =>
                 </div>
             </div>
             <div className="grocery-list-items">
+                <div>GROCERY ITEM COMPONENTS GO HERE!</div>
             </div>
         </div>
     );

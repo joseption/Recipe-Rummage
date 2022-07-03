@@ -1,8 +1,4 @@
-.profile-grocery-list {
-    flex: .4 1;
-}
-
-.profile-recipe-list {
+.recipe-list {
     flex: 1;
     background-color: white;
     padding: 20px;
@@ -10,9 +6,10 @@
     border: solid 1px var(--color-border-accent);
 }
 
-.profile-grocery-list {
+.grocery-list {
     background: white;
     border: solid 1px var(--color-border-accent);
     border-radius: 10px;
     padding: 20px;
+    flex: .4 1;
 }
