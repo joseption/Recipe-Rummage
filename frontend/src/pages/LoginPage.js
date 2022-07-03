@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/LoginPage.css';
 import Login from '../components/Login';
 import ForgotPassword from '../components/ForgotPassword';
 import PasswordSent from '../components/PasswordSent';
@@ -8,6 +7,7 @@ import SetPassword from '../components/SetPassword';
 import PasswordUpdated from '../components/PasswordUpdated';
 import Register from '../components/Register';
 import RegisterSent from '../components/RegisterSent';
+import '../styles/LoginPage.css';
 
 const LoginPage = (props) =>
 {

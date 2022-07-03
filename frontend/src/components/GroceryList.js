@@ -11,21 +11,31 @@ const GroceryList = (props) =>
             <div className="grocery-list-title">{props.title}</div>
             <div>
                 <div>
-                    <input className="grocery-list-add" placeholder={props.addPlaceHolder} />
-                    <div className="btn btn-success">
-                        <FontAwesomeIcon icon={solid("plus")} />
+                    <div>
+                        {props.mode === "profile" ?
+                            (<div className="grocery-list-add-container">
+                                <input type="text" className="grocery-list-add" placeholder="Add Item" />
+                                <div className="btn btn-success grocery-list-add-btn">
+                                    <FontAwesomeIcon icon={solid("plus")} />
+                                </div>
+                            </div>)
+                            :
+                            (<div className="btn btn-success grocery-list-search-btn"></div>)
+                        }
                     </div>
-                    <div className="error-msg"></div>
+                    <div className="error-msg grocery-list-error-msg"></div>
                 </div>
-                <input className="grocery-list-search-btn" placeholder={props.addPlaceHolder} />
             </div>
             <hr className="splitter" />
-            <label className="check-container">Show Only Added Items
-                <input type="checkbox" checked="checked" />
-                <span className="check-checkmark"></span>
-            </label>
-            <div>
-                <input className="grocery-list-search" placeholder={props.searchPlaceHolder} />
+            <div className="grocery-list-search-container">
+                {props.mode !== "profile" ?
+                (<label className="check-container">Show Only Added Items
+                    <input type="checkbox" checked="checked" />
+                    <span className="check-checkmark"></span>
+                </label>) : null}
+                <div>
+                    <input type="text" className="grocery-list-search" placeholder="Search Pantry..." />
+                </div>
             </div>
             <div className="grocery-list-items">
             </div>
