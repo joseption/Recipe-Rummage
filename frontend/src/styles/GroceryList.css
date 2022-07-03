@@ -1,0 +1,37 @@
+.grocery-list-add,
+.grocery-list-search {
+    width: calc(100% - 16px);
+    border: solid 1px var(--color-border);
+    border-radius: 4px;
+    padding: 7px;
+    font-size: 1em;
+    outline: none;
+}
+
+.grocery-list-add-btn {
+    align-items: center;
+    width: 35px;
+    display: flex;
+    justify-content: center;
+    border-radius: 0px 4px 4px 0px;
+    padding: 0px;
+    margin-left: -2px;
+}
+
+.grocery-list-add-container {
+    display: flex;
+    padding-bottom: 10px;
+}
+
+.grocery-list-add-search {
+    margin-bottom: 20px;
+}
+
+.grocery-list-error-msg {
+    min-height: 20px;
+    color:red;
+}
+
+.grocery-list-search-container {
+    margin-top: 20px;
+}

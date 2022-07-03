@@ -57,7 +57,7 @@
     background: var(--color-white-60);
 }
 
-input[type=text],
+input[type=text]:not(.recipe-list-search):not(.grocery-list-add):not(.grocery-list-search),
 input[type=password] {
     width: 300px;
     height: 25px;
