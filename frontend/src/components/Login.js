@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Navigate, Route } from 'react-router-dom';
 import { config } from '../Constants'
 import { validateEmail } from '../Helper';
 
