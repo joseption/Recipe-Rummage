@@ -7,8 +7,17 @@ const SearchPage = (props) =>
 {
 
     return(
-        <div>
-            Search Page!
+        <div className="main-page-container">
+            <Navigation />
+            
+            <div className="main-content-container">
+                <div className="grocery-list">
+                    <GroceryList mode={"search"} />
+                </div>
+                <div className="recipe-list">
+                    <RecipeList searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />
+                </div>
+            </div>
         </div>
     );
 };

@@ -9,6 +9,7 @@ const RecipeItem = (props) =>
     var recipeName;
 
     const [isEditing,setIsEditing] = useState(false);
+    const [isFavorite,setIsFavorite] = useState(false);
 
     const cancelItem = (e) => {
         setIsEditing(false);
@@ -22,8 +23,12 @@ const RecipeItem = (props) =>
         setIsEditing(false);
     };
 
-    const favoriteItem = (e) => {
-        
+    const addToFavorites = (e) => {
+        setIsFavorite(true);
+    };
+
+    const removeFromFavorites = (e) => {
+        setIsFavorite(false);
     };
 
     return(
@@ -38,30 +43,36 @@ const RecipeItem = (props) =>
                         }
                     </div>
                     <div className="recipe-btn-container">
-                        {!isEditing ?
-                        (<div className="recipe-button-content">
-                            <div onClick={() => setIsEditing(true)} className="recipe-btn recipe-edit">
-                            <FontAwesomeIcon icon={solid("pencil")} />
+                        {props.mode === "profile" ?
+                        <div className="recipe-btn-container">
+                            {!isEditing ?
+                            (<div className="recipe-button-content">
+                                <div onClick={() => setIsEditing(true)} className="recipe-btn recipe-edit">
+                                <FontAwesomeIcon icon={solid("pencil")} />
+                                </div>
+                                <div onClick={(e) => removeItem(e)} className="recipe-btn recipe-remove">
+                                    <FontAwesomeIcon icon={solid("xmark")} />
+                                </div>
                             </div>
-                            <div onClick={(e) => removeItem(e)} className="recipe-btn recipe-remove">
-                                <FontAwesomeIcon icon={solid("xmark")} />
+                            ) :
+                            (<div className="recipe-button-content">
+                                <div onClick={(e) => cancelItem(e)} className="recipe-btn recipe-cancel">
+                                    <FontAwesomeIcon icon={solid("rotate-left")} />
+                                </div>
+                                <div onClick={(e) => updateItem(e)} className="recipe-btn recipe-update">
+                                    <FontAwesomeIcon icon={solid("check")} />
+                                </div>
                             </div>
+                            )}
                         </div>
-                        ) :
-                        (<div className="recipe-button-content">
-                            <div onClick={(e) => cancelItem(e)} className="recipe-btn recipe-cancel">
-                                <FontAwesomeIcon icon={solid("rotate-left")} />
-                            </div>
-                            <div onClick={(e) => updateItem(e)} className="recipe-btn recipe-update">
-                                <FontAwesomeIcon icon={solid("check")} />
-                            </div>
-                        </div>
-                        )}
-                        {props.mode !== "profile" ?
-                        (<div onClick={(e) => favoriteItem(e)} className="recipe-btn recipe-like">
-                            <FontAwesomeIcon icon={regular("thumbs-up")} />
-                            <FontAwesomeIcon icon={solid("thumbs-up")} />
-                        </div>) : null }
+                        :
+                        (<div className="recipe-btn recipe-like">
+                            {!isFavorite ?
+                                (<FontAwesomeIcon onClick={(e) => addToFavorites(e)} icon={regular("thumbs-up")} />) :
+                                (<FontAwesomeIcon onClick={(e) => removeFromFavorites(e)} icon={solid("thumbs-up")} />)
+                            }
+                        </div>)
+                        }
                     </div>
                 </div>
                 <div className="recipe-desc-content">

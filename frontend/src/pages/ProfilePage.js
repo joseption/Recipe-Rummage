@@ -10,10 +10,10 @@ const ProfilePage = (props) =>
             <Navigation />
             
             <div className="main-content-container">
-                <div className="profile-grocery-list">
+                <div className="grocery-list">
                     <GroceryList mode={"profile"} />
                 </div>
-                <div className="profile-recipe-list">
+                <div className="recipe-list">
                     <RecipeList searchPlaceHolder={"Find My Recipe"} title={"My Recipes"} mode={"profile"} />
                 </div>
             </div>
