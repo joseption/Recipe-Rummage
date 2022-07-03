@@ -12,6 +12,11 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "babelMacros" : {
+    "fontawesome-svg-core" : {
+      "license": "free"
+    }
+  },
   "scripts": {
     "start": "react-scripts start",
     "//start": "node server.js",
