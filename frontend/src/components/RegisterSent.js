@@ -9,8 +9,14 @@ function RegisterSent(props)
     const [time,setTime] = useState(0);
     const [counter,setCounter] = useState('');
     const [message,setMessage] = useState('');
+    const [sentMsg,setSentMsg] = useState('');
 
     useEffect(() => {
+        if (props.resendVerify)
+            setSentMsg("An unverified email address is already associated with this account. Another activation link has been sent to the address. You must activate your account before you can continue.");
+        else
+            setSentMsg("An email with a link to activate your account has been sent to you.");
+
         let interval;
         if (disabled) {
             interval = setInterval(() => {
@@ -33,7 +39,7 @@ function RegisterSent(props)
             setTime(0);
             setDisabled(false);
         }
-    }, [disabled, time]);
+    }, [disabled, time, props.resendVerify]);
 
     const showScreen = () => {
         props.setScreen("register");
@@ -67,7 +73,7 @@ function RegisterSent(props)
             await fetch(`${config.URL}/api/register`,
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}}).then(async ret => {
                     let res = JSON.parse(await ret.text());
-                    if(res.error)
+                    if(res.error && res.error !== "Account Exists")
                     {
                         if (res.error === "Invalid Email") {
                             setMessage("You must use a valid email address");
@@ -94,7 +100,7 @@ function RegisterSent(props)
                     <FontAwesomeIcon onClick={() => showScreen("register")} className="login-navigate-btn" icon={solid('arrow-left')} />
                     <span className="login-title">Activation Email Sent</span>
                 </div>
-                <div className="login-reset-sent-title">An email with a link to activate your account has been sent to you.</div>
+                <div className="login-reset-sent-title">{sentMsg}</div>
                 <div className="login-forgot-msg"><b>Please check your inbox</b></div>
                 <hr className="splitter" />
                 <div className="login-reset-resend-title">Still haven't received an email yet?</div>

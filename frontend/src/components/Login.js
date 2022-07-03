@@ -24,6 +24,11 @@ function Login(props)
     const [message, setMessage] = useState('');
 
     useEffect(() => {
+        var info = JSON.parse(localStorage.getItem('user_data'));
+        if (info && !!info.id) {
+            window.location.href = '/profile';
+        }
+
         checkDisabledBtn(email);
         checkDisabledBtn(loginPassword);
     }, [email, loginPassword, checkDisabledBtn]);

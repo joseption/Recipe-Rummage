@@ -20,9 +20,9 @@ const GroceryList = (props) =>
                 <input className="grocery-list-search-btn" placeholder={props.addPlaceHolder} />
             </div>
             <hr className="splitter" />
-            <label class="check-container">Show Only Added Items
+            <label className="check-container">Show Only Added Items
                 <input type="checkbox" checked="checked" />
-                <span class="check-checkmark"></span>
+                <span className="check-checkmark"></span>
             </label>
             <div>
                 <input className="grocery-list-search" placeholder={props.searchPlaceHolder} />

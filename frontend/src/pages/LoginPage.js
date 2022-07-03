@@ -11,6 +11,7 @@ import RegisterSent from '../components/RegisterSent';
 
 const LoginPage = (props) =>
 {
+  const [resendVerify, setResendVerify] = useState(false);
   const [email, setEmail] = useState('');
   const [screen, setScreen] = useState('');
   const [error, setError] = useState('');
@@ -85,8 +86,8 @@ const LoginPage = (props) =>
         <div className="login-container">
           <div className="login-content">
             <div ref={(c) => content = c} className="login-workflow-content">
-            <RegisterSent email={email} setScreen={setScreen} />
-            <Register setEmail={setEmail} setError={setError} setScreen={setScreen} />
+            <RegisterSent resendVerify={resendVerify} email={email} setScreen={setScreen} />
+            <Register setResendVerify={setResendVerify} setEmail={setEmail} setError={setError} setScreen={setScreen} />
             <Login setError={setError} setScreen={setScreen} />
             <ForgotPassword setEmail={setEmail} setError={setError} setScreen={setScreen} />
             <PasswordSent email={email} setScreen={setScreen} />
