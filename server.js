@@ -53,7 +53,6 @@ app.post('/api/login', async (req, res, next) =>
   
   if (results.length > 0)
   {
-
     let id = results[0]._id;
     let user_id = results[0].user_id;
     res.status(200).json({ id:id, user_id, email:email, error:''});
@@ -68,37 +67,60 @@ app.post('/api/register', async (req, res, next) =>
   // incoming: email
   // outgoing: sent email
 	
+  let error = "";
   const { email } = req.body;
   const activate_id = uuid();
   const newItem = {email:email, active:false, activate_id:activate_id};
 
   try
   {
+    let existing;
     const db = client.db("LargeProject");
-    db.collection('User').insertOne(newItem);
-      const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const accounts = await db.collection('User').find({email:email}).toArray();
     
-      const msg = {
-        to: req.body.email,
-        from: 'support@joseption.com',
-        subject: 'Account Activation',
-        html: 'Hey there, thank you for your interest in finding some awesome recipes! Let\'s finish getting your account setup.<br /><br />Please click the following link to activate your account: ' + process.env.URL + "/login?activate_id=" + activate_id,
-      };
-    
-      let hasError = false;
-      sgMail.send(msg).catch(err => {
-        hasError = true;
-        res.status(400).json({error:'Unable to send reset email'});
+    if (accounts && accounts.length > 0)
+    {
+      if (!accounts[0].active) {
+        existing = accounts[0]._id;
+        error = "Account Exists";
+      }
+      else {
+        res.status(400).json({error:'An account with this email address is already in use'});
         return;
-      });  
+      }
+    }
+
+    if (!existing)
+      db.collection('User').insertOne(newItem);
+    else {
+      const filter = { "email": email};
+      let update = { $set: { activate_id: activate_id } };  
+      db.collection('User').updateOne(filter, update);
+    }
+
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  
+    const msg = {
+      to: req.body.email,
+      from: 'support@joseption.com',
+      subject: 'Account Activation',
+      html: 'Hey there, thank you for your interest in finding some awesome recipes! Let\'s finish getting your account setup.<br /><br />Please click the following link to activate your account: ' + process.env.URL + "/login?activate_id=" + activate_id,
+    };
+  
+    let hasError = false;
+    sgMail.send(msg).catch(err => {
+      hasError = true;
+      res.status(400).json({error:'Unable to send reset email'});
+      return;
+    });  
   }
   catch(e)
   {
     res.status(400).json({error: 'Error: ' + e});
   }
 
-  res.status(200).json({error:''});
+  res.status(200).json({error:error});
 });
 
 app.post('/api/update-password', async (req, res, next) => 

@@ -36,6 +36,7 @@ function Register(props)
 
     const doRegister = async event => 
     {
+        setMessage("");
         event.preventDefault();
         props.setEmail(email.value);
         if (checkDisabledBtn())
@@ -50,12 +51,16 @@ function Register(props)
             await fetch(`${config.URL}/api/register`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}}).then(async ret => {
                 let res = JSON.parse(await ret.text());
-                if (res.error)
+                if (res.error && res.error !== "Account Exists")
                 {
                     setMessage(res.error);
                 }
                 else
                 {
+                    if (res.error === "Account Exists") {
+                        props.setResendVerify(true);
+                    }
+
                     emailInput.value = "";
                     props.setError([{el:email, isError:false}]);
                     setDisabled(true);

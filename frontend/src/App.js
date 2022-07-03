@@ -15,6 +15,12 @@ function App() {
     }
   );
 
+  useEffect(() => {
+    if (!isAuthenticated && window.location.pathname !== "/login") {
+      window.location.href = '/login';
+    }
+  }, [isAuthenticated]);
+
   return (
     <BrowserRouter>
     <Routes>
