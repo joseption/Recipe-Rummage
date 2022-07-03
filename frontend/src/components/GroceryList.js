@@ -1,7 +1,7 @@
 import '../styles/GroceryList.css';
 import GroceryItem from '../components/GroceryItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useState } from 'react';
 
 const GroceryList = (props) =>

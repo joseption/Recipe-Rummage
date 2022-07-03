@@ -7,7 +7,7 @@ const ProfilePage = (props) =>
 {
     return(
         <div className="main-page-container">
-            <Navigation />
+            <Navigation mode={"profile"} />
             
             <div className="main-content-container">
                 <div className="grocery-list">

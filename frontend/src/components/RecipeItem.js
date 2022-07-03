@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/RecipeItem.css';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const RecipeItem = (props) =>
 {

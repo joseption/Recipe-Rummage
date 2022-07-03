@@ -8,7 +8,7 @@ const SearchPage = (props) =>
 
     return(
         <div className="main-page-container">
-            <Navigation />
+            <Navigation mode="search" />
             
             <div className="main-content-container">
                 <div className="grocery-list">
