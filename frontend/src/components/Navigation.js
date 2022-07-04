@@ -32,8 +32,7 @@ const Navigation = (props) =>
     };
 
     const navLogout = () => {
-        localStorage.removeItem("user_data")
-        window.location.href = '/login';
+        window.location.href = '/logout';
     };
 
     return(

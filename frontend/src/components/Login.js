@@ -55,7 +55,7 @@ function Login(props)
         let js = JSON.stringify(obj);
 
         try
-        {    
+        {   
             await fetch(`${config.URL}/api/login`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json'}}).then(async ret => {
                 let res = JSON.parse(await ret.text());
@@ -65,7 +65,7 @@ function Login(props)
                 }
                 else
                 {
-                    let user = {id:res.id, user_id:res.user_id, email:res.email};
+                    let user = {id:res.id, user_id:res.user_id, email:res.email, auth: res.token};
                     localStorage.setItem('user_data', JSON.stringify(user));
 
                     setMessage('');

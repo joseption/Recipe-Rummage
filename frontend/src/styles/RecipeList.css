@@ -26,4 +26,28 @@
 
 .recipe-list-items::-webkit-scrollbar {
     background: var(--color-white);
-  }
+}
+
+.recipe-list-msg {
+    text-align: center;
+    color: var(--color-border);
+    border: solid 1px var(--color-border);
+    padding: 20px;
+    font-style: italic;
+    border-radius: 4px;
+}
+
+.btn-custom-search {
+    border: solid 1px var(--color-border);
+    display: inline-flex;
+    margin-top: 20px;
+    gap: 5px;
+}
+
+.btn.btn-custom-search:hover {
+    background-color: var(--color-background-secondary);
+}
+
+.btn-search-icon {
+    transform: rotateZ(90deg);
+}

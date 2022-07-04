@@ -1,4 +1,6 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const validateEmail = (email) => {
@@ -17,9 +19,7 @@ const validatePassword = (password, passwordVerify) => {
   return symbol && upperCase && length && match;
 };
 
-
 const { 
-  v1: uuidv1,
   v4: uuid
 } = require('uuid');
 
@@ -40,6 +40,33 @@ app.set('port', (process.env.PORT || 5000));
 app.use(cors());
 app.use(bodyParser.json());
 
+function siteURL() {
+  return (process.env.NODE_ENV === "development") ? process.env.DEV_URL : process.env.PROD_URL;
+}
+
+function generateAccessToken(email) {
+  return jwt.sign({ email }, process.env.TOKEN_SECRET, { expiresIn: "14400s", }); // four hour token
+}
+
+function validateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token == null) {
+    res.status(401).json({error: 'Unauthorized'});
+    return;
+  }
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      res.status(401).json({error: 'Forbidden'});
+      return;
+    }
+
+    req.tokenData = decoded;
+    next();
+  });
+}
 
 //--------------------login/password API's--------------------//
 app.post('/api/login', async (req, res, next) => 
@@ -50,13 +77,21 @@ app.post('/api/login', async (req, res, next) =>
   const { email, password } = req.body;
 
   const db = client.db("LargeProject");
-  const results = await db.collection('User').find({email:email,password:password}).toArray();
-  
+  const results = await db.collection('User').find({email:email}).toArray();
+
   if (results.length > 0)
   {
-    let id = results[0]._id;
-    let user_id = results[0].user_id;
-    res.status(200).json({ id:id, user_id, email:email, error:''});
+    bcrypt.compare(password, results[0].password).then(isMatch => {
+      if (isMatch) {
+        let id = results[0]._id;
+        let user_id = results[0].user_id;
+
+        const token = generateAccessToken({email});
+        res.status(200).json({ token: `Bearer ${token}`, id:id, user_id: user_id, email:email, error:''});
+      } else {
+        res.status(400).json({ error: 'The email or password did not match' });
+      }
+    });
   }
   else {
     res.status(400).json({ error:'The username or password did not match' });
@@ -106,7 +141,7 @@ app.post('/api/register', async (req, res, next) =>
       to: req.body.email,
       from: 'support@joseption.com',
       subject: 'Account Activation',
-      html: 'Hey there, thank you for your interest in finding some awesome recipes! Let\'s finish getting your account setup.<br /><br />Please click the following link to activate your account: ' + process.env.URL + "/login?activate_id=" + activate_id,
+      html: 'Hey there, thank you for your interest in finding some awesome recipes! Let\'s finish getting your account setup.<br /><br />Please click the following link to activate your account: ' + siteURL() + "/login?activate_id=" + activate_id,
     };
   
     let hasError = false;
@@ -134,8 +169,6 @@ app.post('/api/update-password', async (req, res, next) =>
     res.status(400).json({error:'Password does not meet the minimum requirements'});
     return;
   }
-
-  // TO DO PASSWORD MUST BE HASHED!!
 
   const db = client.db("LargeProject");
   let find;
@@ -166,27 +199,37 @@ app.post('/api/update-password', async (req, res, next) =>
       return;
     }
 
-    const filter = { "_id": ObjectId(id)};
-    let update;
-    if (type == 'reset')
-      update = { $set: { reset_id: '', password: password } };  
-    else if (type == 'activate')
-      update = { $set: { activate_id: '', password: password, active: true } };  
-    else {
-      res.status(400).json({error: 'Invalid update type, password could not be changed'});
-      return;
-    }
+    // Password hashing
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(password, salt, (err, hash) => {
+        if (err) {
+          res.status(400).json({ err: 'An issue occurred while setting the password' });
+          return
+        }
 
-    try
-    {
-      const db = client.db("LargeProject");
-      db.collection('User').updateOne(filter, update);
-      res.status(200).json({error:''});
-    }
-    catch(e)
-    {
-      res.status(400).json({error: 'ERROR: ' + e});
-    }
+        const filter = { "_id": ObjectId(id)};
+        let update;
+        if (type == 'reset')
+          update = { $set: { reset_id: '', password: hash } };  
+        else if (type == 'activate')
+          update = { $set: { activate_id: '', password: hash, active: true } };  
+        else {
+          res.status(400).json({error: 'Invalid update type, password could not be changed'});
+          return;
+        }
+    
+        try
+        {
+          const db = client.db("LargeProject");
+          db.collection('User').updateOne(filter, update);
+          res.status(200).json({error:''});
+        }
+        catch(e)
+        {
+          res.status(400).json({error: 'ERROR: ' + e});
+        }
+      });
+    });
   }
   else {
     res.status(400).json({error:'You are using an invalid reset link'});
@@ -242,7 +285,7 @@ app.post('/api/send-password-reset', async (req, res, next) =>
         to: req.body.email,
         from: 'support@joseption.com',
         subject: 'Reset Account Password',
-        html: 'We noticed you\'re having some trouble logging in, sorry about that! Let\'s see if we can get you logged back in.<br /><br />Please click the following link to reset your account password: ' + process.env.URL + "/login?reset_id=" + reset_id,
+        html: 'We noticed you\'re having some trouble logging in, sorry about that! Let\'s see if we can get you logged back in.<br /><br />Please click the following link to reset your account password: ' + siteURL() + "/login?reset_id=" + reset_id,
       };
     
       let hasError = false;
@@ -401,6 +444,29 @@ app.post('/api/search-recipe-item', async (req, res, next) =>
   // incoming: user_id, search
   // outgoing: results[], error
 });
+
+app.post('/api/get-favorite-items', async (req, res, next) => 
+{
+  // incoming: user_id, search
+  // outgoing: results[], error
+
+  let error = '';
+
+  const { user_id } = req.body;
+  
+  await validateToken(req, res, async () => {
+    const db = client.db("LargeProject");
+    const results = await db.collection('Favorite').find({"user_id": ObjectId(user_id)}).toArray();
+    let _ret = [];
+    for (var i = 0; i < results.length; i++) {
+      _ret.push(results[i]);
+    }
+    
+    let ret = {results:_ret, error:error};
+    res.status(200).json(ret);
+  });
+});
+
 app.use((req, res, next) => 
 {
   res.setHeader('Access-Control-Allow-Origin', '*');

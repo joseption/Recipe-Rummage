@@ -1,30 +1,42 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../styles/RecipeItem.css';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { config } from '../Constants'
 
 const RecipeItem = (props) =>
 {
-    var recipeDescription;
-    var recipeName;
-
+    var name; // input
+    var description; // input
+    const [sName,setName] = useState(false);
+    const [sDesc,setDesc] = useState(false);
     const [isEditing,setIsEditing] = useState(false);
     const [isFavorite,setIsFavorite] = useState(false);
+
+    useEffect(() => {
+        setName(props.item.name);
+        setDesc(props.item.description);
+        if (isEditing) {
+            description.value = props.item.description;
+            name.value = props.item.name;
+        }
+    }, [description, name, props.item, isEditing]);
 
     const cancelItem = (e) => {
         setIsEditing(false);
     };
 
-    const removeItem = (e) => {
+    const removeItem = async (e) => {
         
     };
 
-    const updateItem = (e) => {
+    const updateItem = async (e) => {
         setIsEditing(false);
     };
 
-    const addToFavorites = (e) => {
+    const addToFavorites = async (e) => {
         setIsFavorite(true);
+
     };
 
     const removeFromFavorites = (e) => {
@@ -38,8 +50,8 @@ const RecipeItem = (props) =>
                 <div className="recipe-header">
                     <div className="recipe-title-content">
                         {!isEditing ?
-                            (<div className="recipe-title">Dummy Title</div>) :
-                            (<textarea className="recipe-title-edit" ref={(c) => recipeName = c} value="Dummy Edit Text" />)
+                            (<div className="recipe-title">{sName}</div>) :
+                            (<textarea className="recipe-title-edit" ref={(c) => name = c} value="Dummy Edit Text" />)
                         }
                     </div>
                     <div className="recipe-btn-container">
@@ -77,8 +89,8 @@ const RecipeItem = (props) =>
                 </div>
                 <div className="recipe-desc-content">
                     {!isEditing ?
-                        (<div className="recipe-description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</div>) :
-                        (<textarea className="recipe-desc-edit" ref={(c) => recipeDescription = c} value="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)." />)
+                        (<div className="recipe-description">{sDesc}</div>) :
+                        (<textarea className="recipe-desc-edit" ref={(c) => description = c} />)
                     }
                 </div>
             </div>
