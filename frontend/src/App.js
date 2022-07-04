@@ -6,12 +6,18 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from './pages/LoginPage';
 import SearchPage from './pages/SearchPage';
 import ProfilePage from './pages/ProfilePage';
+import LogoutPage from './pages/LogoutPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     () => {
-      var info = JSON.parse(localStorage.getItem('user_data'));
-      return info && !!info.id;
+      try {
+        var info = JSON.parse(localStorage.getItem('user_data'));
+          return info && !!info.id;
+      }
+      catch {
+        return false;
+      }
     }
   );
 
@@ -34,6 +40,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/logout" element={<LogoutPage />} />
     </Routes>
   </BrowserRouter>
 );
