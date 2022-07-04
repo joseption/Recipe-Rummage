@@ -41,6 +41,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
+//--------------------login/password API's--------------------//
 app.post('/api/login', async (req, res, next) => 
 {
   // incoming: email, password
@@ -265,7 +266,9 @@ app.post('/api/send-password-reset', async (req, res, next) =>
   }
 });
 
-app.post('/api/additem', async (req, res, next) =>
+
+//--------------------grocery API's--------------------//
+app.post('/api/add-grocery-item', async (req, res, next) =>
 {
   // incoming: user_id, item
   // outgoing: error
@@ -285,14 +288,72 @@ app.post('/api/additem', async (req, res, next) =>
     error = e.toString();
   }
 
-  itemList.push( item );
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/update-grocery-item', async (req, res, next) => 
+{
+  // incoming: user_id, item, updatedItem
+  // outgoing: error
+
+  const { user_id,item, updatedItem } = req.body;
+
+  const update = { item:item,user_id:user_id, updatedItem:updatedItem };
+
+  let error = '';
+
+  try
+  {
+    const db = client.db("LargeProject");
+    const result = db.collection("Item");
+    const filter = { item:item, user_id:user_id };
+    const updateDoc = {
+      $set: {
+        item: updatedItem
+      },
+    };
+    const out = result.updateOne(filter, updateDoc);
+
+    // console.log(
+
+    //   `${updated ${out.modifiedCount} document`,
+
+    // );
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
 
   let ret = { error: error };
   res.status(200).json(ret);
 });
 
+app.post('/api/remove-grocery-item', async (req, res, next) => 
+{
+  // incoming: user_id, item
+  // outgoing: itemToDelete, error
 
-app.post('/api/searchitems', async (req, res, next) => 
+  const { user_id,item } = req.body;
+  const itemToDelete = { item:item,user_id:user_id };
+  let error = '';
+
+  try
+  {
+    const db = client.db("LargeProject");
+    const result = db.collection('Item').deleteOne(itemToDelete);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  let ret = { itemToDelete:item,error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/search-grocery-item', async (req, res, next) => 
 {
   // incoming: user_id, search
   // outgoing: results[], error
@@ -316,6 +377,30 @@ app.post('/api/searchitems', async (req, res, next) =>
   res.status(200).json(ret);
 });
 
+
+//--------------------recipe API's--------------------//
+app.post('/api/add-recipe-item', async (req, res, next) =>
+{
+  
+});
+
+app.post('/api/update-recipe-item', async (req, res, next) => 
+{
+  // incoming: user_id, item
+  // outgoing: error
+});
+
+app.post('/api/remove-recipe-item', async (req, res, next) => 
+{
+  // incoming: user_id, item
+  // outgoing: error
+});
+
+app.post('/api/search-recipe-item', async (req, res, next) => 
+{
+  // incoming: user_id, search
+  // outgoing: results[], error
+});
 app.use((req, res, next) => 
 {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -329,6 +414,7 @@ app.use((req, res, next) =>
   );
   next();
 });
+
 
 app.listen(PORT, () => 
 {
