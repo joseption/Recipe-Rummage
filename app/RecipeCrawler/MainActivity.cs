@@ -3,9 +3,7 @@ using Android.App;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using AndroidX.AppCompat.Widget;
 using AndroidX.AppCompat.App;
-using Google.Android.Material.FloatingActionButton;
 using Google.Android.Material.Snackbar;
 using Android.Webkit;
 
@@ -60,14 +58,11 @@ namespace RecipeCrawler
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
-            // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.content_main);
-
             web_view = FindViewById<WebView>(Resource.Id.webview);
             web_view.Settings.JavaScriptEnabled = true;
             web_view.SetWebViewClient(new RecipeCrawlerClient());
-            web_view.LoadUrl("https://www.xamarin.com/university");
+            web_view.LoadUrl("https://poosd.herokuapp.com");
         }
 
         public class RecipeCrawlerClient : WebViewClient
