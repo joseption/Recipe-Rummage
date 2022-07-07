@@ -342,7 +342,6 @@ app.post('/api/update-grocery-item', async (req, res, next) =>
 
   const { user_id,item, updatedItem } = req.body;
 
-  const update = { item:item,user_id:user_id, updatedItem:updatedItem };
 
   let error = '';
 
@@ -358,11 +357,7 @@ app.post('/api/update-grocery-item', async (req, res, next) =>
     };
     const out = result.updateOne(filter, updateDoc);
 
-    // console.log(
 
-    //   `${updated ${out.modifiedCount} document`,
-
-    // );
   }
   catch(e)
   {
@@ -422,30 +417,72 @@ app.post('/api/search-grocery-item', async (req, res, next) =>
 
 
 //--------------------recipe API's--------------------//
-app.post('/api/add-recipe-item', async (req, res, next) =>
+app.post('/api/add-recipe', async (req, res, next) =>
 {
+  // incoming: user_id, recipe_name, description, url, image_url
+  // outgoing: error
+
+  const { user_id, recipe_name, description, url, image_url  } = req.body;
+  const newItem = { user_id:user_id, recipe_name:recipe_name, description:description, url:url, image_url:image_url, is_favorite: false };
+  let error = '';
+
+  try
+  {
+    const db = client.db("LargeProject");
+    const result = db.collection('Recipe').insertOne(newItem);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
+
+  let ret = { error: error };
+  res.status(200).json(ret);
+});
+
+app.post('/api/update-recipe', async (req, res, next) => 
+{
+   // incoming: user_id, recipe_name
+  // outgoing: results[], error
+
+  const { user_id, recipe_name, new_recipe_name, new_description, new_url, new_image_url } = req.body;
+  const db = client.db("LargeProject");
+  const recipe = await db.collection('Recipe').find({recipe_name:recipe_name}).toArray();
+
+  // recipe[0].is_favorite = !recipe[0].is_favorite;
   
-});
+  const updateItem = { user_id:user_id, recipe_name:new_recipe_name, description:new_description, url:new_url, image_url:new_image_url, is_favorite: recipe[0].is_favorite };
+  const filter = { user_id, recipe_name:recipe_name };
+  let error = '';
+  try
+  {
+    const updateDoc = { $set: { user_id:user_id, recipe_name:new_recipe_name, description:new_description, url:new_url, image_url:new_image_url, is_favorite: !recipe[0].is_favorite }, };
+    const result = await db.collection('Recipe').updateOne(filter, updateDoc);
+  }
+  catch(e)
+  {
+    error = e.toString();
+  }
 
-app.post('/api/update-recipe-item', async (req, res, next) => 
+  let ret = { updateItem: updateItem, error: error };
+  res.status(200).json(ret);
+});
+  
+
+
+app.post('/api/remove-recipe', async (req, res, next) => 
 {
   // incoming: user_id, item
   // outgoing: error
 });
 
-app.post('/api/remove-recipe-item', async (req, res, next) => 
-{
-  // incoming: user_id, item
-  // outgoing: error
-});
-
-app.post('/api/search-recipe-item', async (req, res, next) => 
+app.post('/api/search-recipe', async (req, res, next) => 
 {
   // incoming: user_id, search
   // outgoing: results[], error
 });
 
-app.post('/api/get-favorite-items', async (req, res, next) => 
+app.post('/api/get-favorite', async (req, res, next) => 
 {
   // incoming: user_id, search
   // outgoing: results[], error
@@ -454,6 +491,7 @@ app.post('/api/get-favorite-items', async (req, res, next) =>
 
   const { user_id } = req.body;
   
+  //pushes back 401 or 403
   await validateToken(req, res, async () => {
     const db = client.db("LargeProject");
     const results = await db.collection('Favorite').find({"user_id": ObjectId(user_id)}).toArray();
