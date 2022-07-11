@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^13.5.0",
     "cheerio": "^1.0.0-rc.12",
     "expo": "^45.0.6",
+    "jest-localstorage-mock": "^2.4.21",
+    "jest": "^28.1.2",
     "node-fetch": "^3.2.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -19,6 +21,10 @@
     "fontawesome-svg-core": {
       "license": "free"
     }
+  },
+  "jest": {
+    "resetMocks": false,
+    "setupFiles": ["jest-localstorage-mock"]
   },
   "scripts": {
     "start": "react-scripts start",
@@ -45,5 +51,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
+    "@babel/preset-react": "^7.18.6"
   }
 }

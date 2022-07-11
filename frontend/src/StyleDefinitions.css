@@ -3,7 +3,7 @@
     --color-success: darkolivegreen;
     --color-success-accent: olive;
     --color-primary: navy;
-    --color-primary-accent: rgb(37, 37, 142);;
+    --color-primary-accent: rgb(72 72 137);
     --color-white-95: #ffffffe0;
     --color-link: dodgerblue;
     --color-link-accent: rgb(86, 171, 255);
@@ -16,4 +16,5 @@
     --color-border-accent: #dbdbdb;
     --color-white: white;
     --color-black: black;
+    --color-danger-light: #8b000026;
 }
