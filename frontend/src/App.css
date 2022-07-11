@@ -252,3 +252,13 @@ textarea {
 .logout-text {
   margin: 10px;
 }
+
+a {
+  text-decoration: none;
+  color: var(--color-link);
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--color-link-accent);
+}
