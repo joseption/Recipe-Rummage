@@ -24,3 +24,5 @@ yarn-error.log*
 
 # Ignore .env files
 .env
+/html
+/src/components/Crawler.js
