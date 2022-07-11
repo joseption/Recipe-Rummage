@@ -47,9 +47,10 @@ const RecipeList = (props) =>
 
     const getFavorites = useCallback(async () => {
         if (!favoritesLoaded) {
+            let prop = props;
             setIsLoading(true);
             setFavoritesLoaded(true);
-            props.setRecipeError("");
+            prop.setRecipeError("");
 
             let obj = {user_id: Constant.user_id};
             let js = JSON.stringify(obj);
@@ -68,7 +69,7 @@ const RecipeList = (props) =>
                 else
                 {
                     if (res.results.length === 0)
-                        props.setRecipeError("no_recipes");
+                        prop.setRecipeError("no_recipes");
                     else
                         setFavorites(res.results);
                         
