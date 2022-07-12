@@ -401,13 +401,12 @@ app.post('/api/search-grocery-item', async (req, res, next) =>
 
   let error = '';
 
-  const { user_id, search } = req.body;
+  const { user_id} = req.body;
+  const fetchItems = {user_id:user_id };
 
-  let _search = search.trim();
   
   const db = client.db("LargeProject");
-  const results = await db.collection('Item').find({"item":{$regex:_search+'.*', $options:'r'}}).toArray();
-  
+  const results = await db.collection('Item').find(fetchItems).toArray();
   let _ret = [];
   for( var i=0; i<results.length; i++ )
   {
