@@ -1,7 +1,7 @@
 import '../styles/GroceryList.css';
 import GroceryItem from '../components/GroceryItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useState } from 'react';
 
 const GroceryList = (props) =>
@@ -31,10 +31,10 @@ const GroceryList = (props) =>
                                 </div>
                             </div>)
                             :
-                            (<div className="btn btn-success grocery-list-search-btn">Find Recipes</div>)
+                            (<div onClick={() => props.search()} className="btn btn-success grocery-list-search-btn">Find Recipes</div>)
                         }
                     </div>
-                    <div className="error-msg grocery-list-error-msg"></div>
+                    <div className="error-msg grocery-list-error-msg">{props.error}</div>
                 </div>
             </div>
             <hr className="splitter" />

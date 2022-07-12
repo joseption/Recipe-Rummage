@@ -26,10 +26,6 @@
     color: var(--color-primary-accent);
 }
 
-.recipe-card:hover {
-    background-color: var(--color-hover);
-}
-
 .recipe-card {
     background-color: var(--color-background-secondary);
     padding: 10px;
@@ -43,6 +39,10 @@
 
 .recipe-title {
     font-weight: bold;
+    width: 470px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .recipe-btn-container {
@@ -61,10 +61,6 @@
     align-items: center;
     cursor: pointer;
     transition: background-color .15s ease;
-}
-
-.recipe-btn:hover {
-    background-color: var(--color-background-secondary);
 }
 
 .recipe-header {
@@ -121,4 +117,19 @@ textarea {
 
 .recipe-title-edit {
     height: 25px;
+}
+
+.recipe-image > img {
+    width: 70px;
+    object-fit: cover;
+    height: 70px;
+    object-position: center;
+}
+
+.recipe-item-error {
+    background-color: var(--color-danger-light);
+}
+
+.recipe-item-error:hover {
+    background-color: var(--color-danger-light);
 }
