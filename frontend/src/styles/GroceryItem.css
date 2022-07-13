@@ -1,0 +1,150 @@
+.grocery-edit,
+.grocery-update {
+    color: var(--color-success);
+}
+
+.grocery-edit:hover,
+.grocery-update:hover {
+    color: var(--color-success-accent);
+}
+
+.grocery-remove,
+.grocery-cancel {
+    color: var(--color-danger);
+}
+
+.grocery-remove:hover,
+.grocery-cancel:hover {
+    color: var(--color-danger-accent);
+}
+
+.grocery-like {
+    color: var(--color-primary);
+}
+
+.grocery-like:hover {
+    color: var(--color-primary-accent);
+}
+
+.grocery-card {
+    background-color: var(--color-background-secondary);
+    padding: 10px;
+    border-radius: 4px;
+    flex-direction: row;
+    gap: 10px;
+    display: flex;
+    max-height: 300px;
+    transition: background-color .15s ease;
+}
+
+.grocery-title {
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.grocery-btn-container {
+    display: flex;
+    gap: 5px;
+}
+
+.grocery-btn {
+    background-color: white;
+    border-radius: 50px;
+    font-size: 1.15em;
+    width: 27px;
+    height: 27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+.grocery-header {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.grocery-image {
+    width: 70px;
+    background-color: white;
+    height: 70px;
+    min-width: 70px;
+    min-height: 70px;
+}
+
+.grocery-button-content {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.grocery-title-content,
+.grocery-desc-content {
+    display: flex;
+    width: 100%;
+}
+
+.grocery-desc-content {
+    padding-top: 10px;
+}
+
+textarea {
+    outline: none;
+    width: calc(100% - 10px);
+    display: flex;
+    padding: 5px;
+    resize: vertical;
+    max-height: 125px;
+    min-height: 25px;
+    border: solid 1px var(--color-border);
+    border-radius: 4px;
+}
+
+.grocery-content {
+    overflow: hidden;
+    width: 100%;
+}
+
+.grocery-desc-edit {
+    height: 100vh;
+}
+
+.grocery-title-edit {
+    height: 25px;
+}
+
+.grocery-image > img {
+    width: 70px;
+    object-fit: cover;
+    height: 70px;
+    object-position: center;
+}
+
+.grocery-item-error {
+    background-color: var(--color-danger-light);
+}
+
+.grocery-item-error:hover {
+    background-color: var(--color-danger-light);
+}
+
+.grocery-card-search {
+    cursor: pointer;
+}
+
+.grocery-card-search:hover {
+    background-color: var(--color-success-hover);
+}
+
+.grocery-item-selected {
+    background-color: var(--color-success-hover);
+}
+
+.grocery-item-selected:hover {
+    background-color: var(--color-success-hover-accent);
+}

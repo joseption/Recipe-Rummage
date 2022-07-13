@@ -3,7 +3,6 @@ import '../styles/RecipeItem.css';
 import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { useEffect, useState } from 'react';
 import { Constant, config } from '../Constants'
-import { faPersonMilitaryToPerson } from '@fortawesome/free-solid-svg-icons';
 
 const RecipeItem = (props) =>
 {
