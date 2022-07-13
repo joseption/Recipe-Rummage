@@ -7,17 +7,21 @@ import { Constant, config } from '../Constants';
 
 const SearchPage = (props) =>
 {
-    const [ingredients, setIngredients] = useState(["sauce"]);
     const [error, setError] = useState('');
     const [results, setResults] = useState([]);
     const [recipeError,setRecipeError] = useState('');
+    const [groceryError,setGroceryError] = useState('');
+    const [items,setItems] = useState([]);
 
     const getSearchResults = async () => {
+
+        // Fix this how ever it needs to work with API
         setError('');
         setRecipeError('');
         let list = "";
-        ingredients.forEach(x => {
-            list += x + "%2C";
+        items.forEach(x => {
+            if (x.isSelected)
+                list += x.item.replace(/ /g, "%2C") + "%2C";
         });
         let idx = list.lastIndexOf("%2C");
         if (idx > -1)
@@ -68,7 +72,7 @@ const SearchPage = (props) =>
             
             <div className="main-content-container">
                 <div className="grocery-list">
-                    <GroceryList error={error} search={() => getSearchResults()} mode={"search"} />
+                    <GroceryList setItems={setItems} items={items} setGroceryError={setGroceryError} groceryError={groceryError} error={error} search={() => getSearchResults()} mode={"search"} />
                 </div>
                 <div className="recipe-list">
                     <RecipeList setRecipeError={setRecipeError} recipeError={recipeError} results={results} searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />

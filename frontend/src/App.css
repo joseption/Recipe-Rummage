@@ -137,7 +137,7 @@ textarea {
 .check-container {
   display: block;
   position: relative;
-  padding-left: 25px;
+  padding-left: 30px;
   margin-bottom: 5px;
   cursor: pointer;
   -webkit-user-select: none;
@@ -162,12 +162,14 @@ textarea {
   left: 0;
   height: 20px;
   width: 20px;
-  background-color: var(--color-border-accent);
+  background-color: var(--color-background-secondary);
+  border: solid 1px var(--color-border-accent);
+  border-radius: 4px;
 }
 
 /* On mouse-over, add a grey background color */
 .check-container:hover input ~ .check-checkmark {
-  background-color: #ccc;
+  background-color: var(--color-border-accent);
 }
 
 /* When the checkbox is checked, add a blue background */

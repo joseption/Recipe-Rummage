@@ -3,14 +3,14 @@ import RecipeItem from '../components/RecipeItem';
 import { useCallback, useEffect, useState } from 'react';
 import { Constant, config } from '../Constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { solid, regular } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 const RecipeList = (props) =>
 {
-    const noRecipesMsg = "You don't have any recipes saved yet!\n\nSearch for recipes and add them to your favorites first."
-    const noResultsMsg = "No results. Remove some grocery items and try again."
-    const noLocalResultsMsg = "No results were found that match your criteria."
-    const getStarted = "To get started, select some pantry items and click the 'Find Recipes' button."
+    const noRecipesMsg = "You don't have any recipes saved yet\n\nSearch for recipes and add them to your favorites first"
+    const noResultsMsg = "No results. Remove some grocery items and try again"
+    const noLocalResultsMsg = "No results were found that match your criteria"
+    const getStarted = "To get started, select some pantry items and click the 'Find Recipes' button"
     const [message,setMessage] = useState('');
     const [favorites,setFavorites] = useState([]);
     const [favoritesLoaded,setFavoritesLoaded] = useState(false);

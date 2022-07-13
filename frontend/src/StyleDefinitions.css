@@ -17,4 +17,6 @@
     --color-white: white;
     --color-black: black;
     --color-danger-light: #8b000026;
+    --color-success-hover: rgba(85, 107, 47, 0.25);
+    --color-success-hover-accent: rgba(85, 107, 47, 0.5);
 }
