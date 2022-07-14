@@ -20,6 +20,21 @@ const GroceryItem = (props) =>
         if (props.mode === "search") {
             card.classList.add("grocery-card-search");
         }
+        else {
+            if (props.item.isNew) {
+                let item = card;
+                item.style.backgroundColor = "var(--color-success-hover-accent)";
+                item.style.transition = "transform .15s ease";
+                setTimeout(() => {
+                    item.style.transition = "background-color .5s ease-out";
+                    item.style.backgroundColor = ""
+                    setTimeout(() => {
+                        item.style.transition = "";
+                        props.item.isNew = false;
+                    }, 500);
+                }, 2000);
+            }
+        }
     }, [name, props.item, isEditing, card, props.mode]);
 
     const showEditor = () => {
@@ -97,6 +112,17 @@ const GroceryItem = (props) =>
             });
     };
 
+    const checkKeyDown = (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            updateItem(e);
+        }
+        else if (e.keyCode === 27) {
+            e.preventDefault();
+            cancelItem(e);
+        }
+    }
+
     return(
         <div onClick={() => toggleSelected()} ref={(c) => card = c} style={props.style} className={"grocery-card"}>
             <div className="grocery-content">
@@ -104,7 +130,7 @@ const GroceryItem = (props) =>
                     <div className="grocery-title-content">
                         {!isEditing ?
                             (<div className="grocery-title">{sName}</div>) :
-                            (<textarea className="grocery-title-edit" ref={(c) => name = c} />)
+                            (<textarea onKeyDown={(e) => checkKeyDown(e)} className="grocery-title-edit" ref={(c) => name = c} />)
                         }
                     </div>
                     <div className="grocery-btn-container">

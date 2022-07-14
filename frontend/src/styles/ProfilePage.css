@@ -1,15 +1,7 @@
 .recipe-list {
     flex: 1;
-    background-color: white;
+    background-color: var(--color-white-pass);
     padding: 20px;
     border-radius: 10px;
     border: solid 1px var(--color-border-accent);
-}
-
-.grocery-list {
-    background: white;
-    border: solid 1px var(--color-border-accent);
-    border-radius: 10px;
-    padding: 20px;
-    flex: .4 1;
 }

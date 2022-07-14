@@ -14,6 +14,9 @@
     "license": "ISC",
     "dependencies": {
         "@babel/helper-module-imports": "^7.18.6",
+        "@capacitor/android": "^3.6.0",
+        "@capacitor/cli": "^3.6.0",
+        "@capacitor/core": "^3.6.0",
         "@fortawesome/fontawesome-svg-core": "^6.1.1",
         "@fortawesome/free-regular-svg-icons": "^6.1.1",
         "@fortawesome/free-solid-svg-icons": "^6.1.1",

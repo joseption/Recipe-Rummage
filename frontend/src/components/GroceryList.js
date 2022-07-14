@@ -8,6 +8,7 @@ import { Constant, config } from '../Constants'
 const GroceryList = (props) =>
 {
     var addItem;
+    var container;
     const [checked,setChecked] = useState(false);
     const noGroceriesMsg = "Added grocery items will appear here"
     const [message,setMessage] = useState('');
@@ -19,6 +20,8 @@ const GroceryList = (props) =>
     const [toggled,setToggled] = useState(false);
 
     const getItems = useCallback(async () => {
+        setError('');
+        setMessage('');
         if (!itemsLoaded) {
             let prop = props;
             setIsLoading(true);
@@ -59,7 +62,13 @@ const GroceryList = (props) =>
             setIsLoaded(true);
             getItems();
         }
-    }, [getItems, props, isLoaded]);
+        if (props.toggleView && props.isMobile) {
+            container.parentElement.style.display = "none";
+        }
+        else {
+            container.parentElement.style.display = "block";
+        }
+    }, [getItems, props, isLoaded, container]);
 
     const deleteItem = (id) => {
         for (let i = 0; i < props.items.length; i++) {
@@ -105,6 +114,7 @@ const GroceryList = (props) =>
     }
 
     const addNewItem = async (e) => {
+        setMessage('');
         setError('');
         var itemField = addItem;
         addItem.classList.remove("input-error");
@@ -136,7 +146,8 @@ const GroceryList = (props) =>
             {               
                 if (res.result) {
                     var myItems = props.items.slice();
-                    myItems.push(res.result);
+                    res.result.isNew = true;
+                    myItems.unshift(res.result);
                     props.setItems(myItems);
                     itemField.value = "";
                     props.setGroceryError("");
@@ -185,9 +196,14 @@ const GroceryList = (props) =>
     };
 
     return(
-        <div>
-            <div className="grocery-list-title">My Pantry</div>
-            <div>
+        <div ref={(c) => container = c} className="groceries-container">
+            <div className="generic-header-content">
+                <div className="grocery-list-title">My Pantry</div>
+                {props.isMobile ?
+                    <FontAwesomeIcon onClick={() => props.setToggleView(!props.toggleView)} className="view-switch" icon={solid('arrow-left')} />
+                : null }
+            </div>
+            <div className="grocery-list-overview">
                 <div>
                     <div>
                         {props.mode === "profile" ?
@@ -215,7 +231,7 @@ const GroceryList = (props) =>
                     <input type="text" onChange={(e) => setSearch(e.target.value)} className="grocery-list-search" placeholder="Search Pantry..." />
                 </div>
             </div>
-            <div>
+            <div className="grocery-all-items">
             {isLoading ?
             (<div className="loading">
                 <div className="rotating">
@@ -224,9 +240,11 @@ const GroceryList = (props) =>
                 <div>Loading</div>
             </div>) : null}
             {message ?
-            (<div className="error-msg">{message}</div>) : null}
+            (<div className="grocery-error error-msg">{message}</div>) : null}
             {props.mode === "profile" ? /* Keep this top part for profile groceries */
-            (<div>
+            (<div>   
+            {!message ?
+            (<div>                          
                 {!props.groceryError && props.items ?
                     (<div className="grocery-list-items">
                     {mappedItems()}
@@ -244,6 +262,8 @@ const GroceryList = (props) =>
                         }
                     </div>)
                 }
+            </div>)
+            : null}
             </div>)
             : /* Keep this bottom part for search groceries */
             (<div>

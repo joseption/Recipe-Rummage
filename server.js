@@ -437,7 +437,7 @@ app.post('/api/get-grocery-items', async (req, res, next) =>
     const { user_id} = req.body;
     
     const db = client.db("LargeProject");
-    const results = await db.collection('Item').find({user_id:ObjectId(user_id)}).toArray();
+    const results = await db.collection('Item').find({user_id:ObjectId(user_id)}).sort({item:1}).toArray();
     
     let ret = {results:results, error:error};
     res.status(200).json(ret);
