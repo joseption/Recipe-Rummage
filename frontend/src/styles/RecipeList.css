@@ -59,3 +59,11 @@
     flex-direction: column;
     height: 100%;
 }
+
+.recipe-list {
+    flex: 1;
+    background-color: var(--color-white-pass);
+    padding: 20px;
+    border-radius: 10px;
+    border: solid 1px var(--color-border-accent);
+}

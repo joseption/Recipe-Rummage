@@ -17,7 +17,6 @@ const GroceryList = (props) =>
     const [isLoading,setIsLoading] = useState(false);
     const [search,setSearch] = useState('');
     const [isLoaded,setIsLoaded] = useState(false);
-    const [toggled,setToggled] = useState(false);
 
     const getItems = useCallback(async () => {
         setError('');

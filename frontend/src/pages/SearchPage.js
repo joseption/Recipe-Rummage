@@ -1,10 +1,8 @@
-import '../styles/SearchPage.css';
 import RecipeList from '../components/RecipeList';
 import GroceryList from '../components/GroceryList';
 import Navigation from '../components/Navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Constant, config } from '../Constants';
-import { useEffect } from 'react';
 
 const SearchPage = (props) =>
 {
@@ -54,7 +52,11 @@ const SearchPage = (props) =>
                 let res = JSON.parse(await ret.text());
                 if (res.error)
                 {
-                    setError(res.error);
+                    if (res.error === "Unauthorized" || res.error === "Forbidden") {
+                        setError("You appear to be signed out, try logging out and back in again");
+                    }
+                    else
+                        setError(res.error);
                 }
                 else
                 {   

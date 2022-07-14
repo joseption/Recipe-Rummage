@@ -57,8 +57,13 @@ const GroceryItem = (props) =>
                 let res = JSON.parse(await ret.text());
                 if (res.error)
                 {
-                    props.setMessage(res.error);
-                    cCard.classList.add("grocery-item-error");
+                    if (res.error === "Unauthorized" || res.error === "Forbidden") {
+                        props.setMessage("You appear to be signed out, try logging out and back in again");
+                    }
+                    else {
+                        props.setMessage(res.error);
+                        cCard.classList.add("grocery-item-error");
+                    }
                 }
                 else
                 {                       
@@ -99,8 +104,13 @@ const GroceryItem = (props) =>
                 let res = JSON.parse(await ret.text());
                 if (res.error)
                 {
-                    cCard.classList.add("grocery-item-error");
-                    props.setMessage(res.error);
+                    if (res.error === "Unauthorized" || res.error === "Forbidden") {
+                        props.setMessage("You appear to be signed out, try logging out and back in again");
+                    }
+                    else {
+                        cCard.classList.add("grocery-item-error");
+                        props.setMessage(res.error);
+                    }
                 }
                 else
                 {                       
