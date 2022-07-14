@@ -24,6 +24,7 @@ const LoginPage = (props) =>
   useEffect(() => {
     if (!loaded)
     {
+      content.parentElement.classList.add("login-show");
       var resetID = searchParams.get("reset_id");
       if (resetID) {
         setPasswordID(resetID);

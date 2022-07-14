@@ -4,6 +4,7 @@ import GroceryList from '../components/GroceryList';
 import Navigation from '../components/Navigation';
 import { useState } from 'react';
 import { Constant, config } from '../Constants';
+import { useEffect } from 'react';
 
 const SearchPage = (props) =>
 {
@@ -12,6 +13,21 @@ const SearchPage = (props) =>
     const [recipeError,setRecipeError] = useState('');
     const [groceryError,setGroceryError] = useState('');
     const [items,setItems] = useState([]);
+    const [toggleView,setToggleView] = useState(false);
+    const [isMobile,setIsMobile] = useState(false);
+
+    const handleResize = () => {
+        if (window.innerWidth <= 1080) {
+            setIsMobile(true)
+        } else {
+            setIsMobile(false)
+        }
+    }
+
+    useEffect(() => {
+        handleResize();
+        window.addEventListener("resize", handleResize);
+      })
 
     const getSearchResults = async () => {
 
@@ -68,14 +84,13 @@ const SearchPage = (props) =>
 
     return(
         <div className="main-page-container">
-            <Navigation mode="search" />
-            
+            <Navigation mode="search" />           
             <div className="main-content-container">
                 <div className="grocery-list">
-                    <GroceryList setItems={setItems} items={items} setGroceryError={setGroceryError} groceryError={groceryError} error={error} search={() => getSearchResults()} mode={"search"} />
+                    <GroceryList toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setItems={setItems} items={items} setGroceryError={setGroceryError} groceryError={groceryError} error={error} search={() => getSearchResults()} mode={"search"} />
                 </div>
                 <div className="recipe-list">
-                    <RecipeList setRecipeError={setRecipeError} recipeError={recipeError} results={results} searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />
+                    <RecipeList toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setRecipeError={setRecipeError} recipeError={recipeError} results={results} searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />
                 </div>
             </div>
         </div>

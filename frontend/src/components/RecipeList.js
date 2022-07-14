@@ -7,6 +7,7 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 const RecipeList = (props) =>
 {
+    var container;
     const noRecipesMsg = "You don't have any recipes saved yet\n\nSearch for recipes and add them to your favorites first"
     const noResultsMsg = "No results. Remove some grocery items and try again"
     const noLocalResultsMsg = "No results were found that match your criteria"
@@ -94,12 +95,23 @@ const RecipeList = (props) =>
                 props.setRecipeError("get_started");
             }
         }
-    }, [getFavorites, props, isLoaded]);
+        if (!props.toggleView && props.isMobile) {
+            container.parentElement.style.display = "none";
+        }
+        else {
+            container.parentElement.style.display = "block";
+        }
+    }, [getFavorites, props, isLoaded, container]);
 
     return(
-        <div>
+        <div ref={(c) => container = c} className="recipe-container">
+            <div className="generic-header-content">
             <div className="recipe-list-title">{props.title}</div>
-            <div><input className="recipe-list-search" type="text" onChange={(e) => setSearch(e.target.value)} placeholder={props.searchPlaceHolder} /></div>
+                {props.isMobile ?
+                        <FontAwesomeIcon onClick={() => props.setToggleView(!props.toggleView)} className="view-switch" icon={solid('arrow-left')} />
+                    : null }
+            </div>
+            <div className="recipe-search-input-container"><input className="recipe-list-search" type="text" onChange={(e) => setSearch(e.target.value)} placeholder={props.searchPlaceHolder} /></div>
             {isLoading ?
             (<div className="loading">
                 <div className="rotating">
