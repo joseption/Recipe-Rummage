@@ -137,14 +137,14 @@ textarea {
     cursor: pointer;
 }
 
-.grocery-card-search:hover {
+html.nontouch .grocery-card-search:hover {
     background-color: var(--color-success-hover);
+}
+
+html.nontouch .grocery-item-selected:hover {
+    background-color: var(--color-success-hover-accent);
 }
 
 .grocery-item-selected {
     background-color: var(--color-success-hover);
-}
-
-.grocery-item-selected:hover {
-    background-color: var(--color-success-hover-accent);
 }

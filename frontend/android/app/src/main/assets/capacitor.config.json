@@ -1,0 +1,7 @@
+{
+	"appId": "com.poosd.recipecrawler",
+	"appName": "recipecrawler",
+	"webDir": "build",
+	"bundledWebRuntime": false,
+	"cordova": {}
+}
