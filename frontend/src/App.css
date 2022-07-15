@@ -232,7 +232,7 @@ textarea {
     gap: 5px;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 @-webkit-keyframes rotating /* Safari and Chrome */ {
