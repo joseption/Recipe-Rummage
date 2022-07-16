@@ -420,15 +420,17 @@ app.post('/api/search-grocery-item', async (req, res, next) =>
 
 
 //--------------------Search Page API--------------------//
-// Add Recipe (Search Page)
-app.post('/api/add-recipe', async (req, res, next) =>
+// Add Recipe: to be used if the user wishes to manually enter a recipe
+app.post('/api/add-favorite', async (req, res, next) =>
 {
-  // incoming: user_id, name, description, url, image_url
+  // incoming: user_id, recipe_category, recipe_name, ingredients, cook_time, serving_size, recipe_tags, recipe_url, image_url
   // outgoing: error
 
   await validateToken(req, res, async () => {
-    const { user_id, name, description, url, image_url  } = req.body;
-    const newItem = { user_id:ObjectId(user_id), name:name, description:description, url:url, image_url:image_url };
+    const { user_id, recipe_category, recipe_name, ingredients, cook_time, serving_size, recipe_tags, recipe_url, image_url } = req.body;
+    const newItem = { user_id:user_id, recipe_category:recipe_category, recipe_name:recipe_name, ingredients:ingredients, cook_time:cook_time, serving_size:serving_size, recipe_tags:recipe_tags, recipe_url:recipe_url, image_url:image_url };
+
+
     let error = '';
 
     try
@@ -452,7 +454,7 @@ app.post('/api/add-recipe', async (req, res, next) =>
 });
 
 // Remove Recipe (Search Page)
-app.post('/api/remove-recipe', async (req, res, next) =>
+app.post('/api/remove-favorite', async (req, res, next) =>
 {
   // incoming: id
   // outgoing: error
