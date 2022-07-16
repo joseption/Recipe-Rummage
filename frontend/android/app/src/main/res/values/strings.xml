@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Recipe Rummage</string>
+    <string name="title_activity_main">Recipe Rummage</string>
+    <string name="package_name">com.poosd.recipecrawler</string>
+    <string name="custom_url_scheme">com.poosd.recipecrawler</string>
+</resources>

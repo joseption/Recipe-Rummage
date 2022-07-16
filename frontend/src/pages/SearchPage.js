@@ -1,23 +1,41 @@
-import '../styles/SearchPage.css';
 import RecipeList from '../components/RecipeList';
 import GroceryList from '../components/GroceryList';
 import Navigation from '../components/Navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Constant, config } from '../Constants';
 
 const SearchPage = (props) =>
 {
-    const [ingredients, setIngredients] = useState(["sauce"]);
     const [error, setError] = useState('');
     const [results, setResults] = useState([]);
     const [recipeError,setRecipeError] = useState('');
+    const [groceryError,setGroceryError] = useState('');
+    const [items,setItems] = useState([]);
+    const [toggleView,setToggleView] = useState(false);
+    const [isMobile,setIsMobile] = useState(false);
+
+    const handleResize = () => {
+        if (window.innerWidth <= 1080) {
+            setIsMobile(true)
+        } else {
+            setIsMobile(false)
+        }
+    }
+
+    useEffect(() => {
+        handleResize();
+        window.addEventListener("resize", handleResize);
+      })
 
     const getSearchResults = async () => {
+
+        // Fix this how ever it needs to work with API
         setError('');
         setRecipeError('');
         let list = "";
-        ingredients.forEach(x => {
-            list += x + "%2C";
+        items.forEach(x => {
+            if (x.isSelected)
+                list += x.item.replace(/ /g, "%2C") + "%2C";
         });
         let idx = list.lastIndexOf("%2C");
         if (idx > -1)
@@ -34,7 +52,11 @@ const SearchPage = (props) =>
                 let res = JSON.parse(await ret.text());
                 if (res.error)
                 {
-                    setError(res.error);
+                    if (res.error === "Unauthorized" || res.error === "Forbidden") {
+                        setError("You appear to be signed out, try logging out and back in again");
+                    }
+                    else
+                        setError(res.error);
                 }
                 else
                 {   
@@ -64,14 +86,13 @@ const SearchPage = (props) =>
 
     return(
         <div className="main-page-container">
-            <Navigation mode="search" />
-            
+            <Navigation mode="search" />           
             <div className="main-content-container">
                 <div className="grocery-list">
-                    <GroceryList error={error} search={() => getSearchResults()} mode={"search"} />
+                    <GroceryList toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setItems={setItems} items={items} setGroceryError={setGroceryError} groceryError={groceryError} error={error} search={() => getSearchResults()} mode={"search"} />
                 </div>
                 <div className="recipe-list">
-                    <RecipeList setRecipeError={setRecipeError} recipeError={recipeError} results={results} searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />
+                    <RecipeList toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setRecipeError={setRecipeError} recipeError={recipeError} results={results} searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />
                 </div>
             </div>
         </div>

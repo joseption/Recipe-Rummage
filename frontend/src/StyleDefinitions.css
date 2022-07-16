@@ -11,10 +11,13 @@
     --color-white-60: #ffffff94;
     --color-danger: darkred;
     --color-danger-accent: red;
-    --color-background-secondary: #F5F5F5;
+    --color-background-secondary: #f1f1f1;
     --color-hover: #1e8fff1b;
     --color-border-accent: #dbdbdb;
     --color-white: white;
     --color-black: black;
     --color-danger-light: #8b000026;
+    --color-success-hover: rgba(85, 107, 47, 0.25);
+    --color-success-hover-accent: rgba(85, 107, 47, 0.5);
+    --color-white-pass: #fffffff0;
 }

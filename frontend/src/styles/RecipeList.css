@@ -16,16 +16,14 @@
     font-weight: bold;
     font-size: 1.25em;
     text-align: center;
-    margin-bottom: 10px;
 }
 
 .recipe-list-items {
-    max-height: 1000px;
     overflow: auto;
 }
 
 .recipe-list-items::-webkit-scrollbar {
-    background: var(--color-white);
+    background: transparent;
 }
 
 .recipe-list-msg {
@@ -50,4 +48,22 @@
 
 .btn-search-icon {
     transform: rotateZ(90deg);
+}
+
+.recipe-search-input-container {
+    display: flex;
+}
+
+.recipe-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.recipe-list {
+    flex: 1;
+    background-color: var(--color-white-pass);
+    padding: 20px;
+    border-radius: 10px;
+    border: solid 1px var(--color-border-accent);
 }

@@ -24,6 +24,7 @@ const LoginPage = (props) =>
   useEffect(() => {
     if (!loaded)
     {
+      content.parentElement.classList.add("login-show");
       var resetID = searchParams.get("reset_id");
       if (resetID) {
         setPasswordID(resetID);
@@ -37,32 +38,38 @@ const LoginPage = (props) =>
         setIsPasswordReset(false);
         setScreen("set_password");
       }
-
-      setLoaded(true);
     }
 
     let base = 430;
     if (!screen || screen === "login") {
-      content.style.transform = `translate(-${base * 2}px, 0px)`;
+      content.style.transform = `translateX(-${base * 2}px)`;
     }
     else if (screen === "forgot_password") {
-      content.style.transform = `translate(-${base * 3}px, 0px)`;
+      content.style.transform = `translateX(-${base * 3}px)`;
     }
     else if (screen === "password_sent") {
-      content.style.transform = `translate(-${base * 4}px, 0px)`;
+      content.style.transform = `translateX(-${base * 4}px)`;
     }
     else if (screen === "set_password") {
-      content.style.transform = `translate(-${base * 5}px, 0px)`;
+      content.style.transform = `translateX(-${base * 5}px)`;
     }
     else if (screen === "password_updated") {
-      content.style.transform = `translate(-${base * 6}px, 0px)`;
+      content.style.transform = `translateX(-${base * 6}px)`;
       setSearchParams({});
     }     
     else if (screen === "register") {
-      content.style.transform = `translate(-${base}px, 0px)`;
+      content.style.transform = `translateX(-${base}px)`;
     }
     else if (screen === "register_sent") {
-      content.style.transform = `translate(0px, 0px)`;
+      content.style.transform = `translateX(0px)`;
+    }
+
+    if (!loaded) {
+      setLoaded(true);
+      let loginContainer = content;
+      setTimeout(() => {
+        loginContainer.classList.add("login-workflow-animate");
+      }, 250);
     }
 
     if (error) {
@@ -85,14 +92,16 @@ const LoginPage = (props) =>
       <div className="login-background">
         <div className="login-container">
           <div className="login-content">
-            <div ref={(c) => content = c} className="login-workflow-content">
-            <RegisterSent resendVerify={resendVerify} email={email} setScreen={setScreen} />
-            <Register setResendVerify={setResendVerify} setEmail={setEmail} setError={setError} setScreen={setScreen} />
-            <Login setError={setError} setScreen={setScreen} />
-            <ForgotPassword setEmail={setEmail} setError={setError} setScreen={setScreen} />
-            <PasswordSent email={email} setScreen={setScreen} />
-            <SetPassword setError={setError} isPasswordReset={isPasswordReset} passwordID={passwordID} setScreen={setScreen} />
-            <PasswordUpdated setScreen={setScreen} />
+            <div className="login-items">
+              <div ref={(c) => content = c} className="login-workflow-content">
+              <RegisterSent resendVerify={resendVerify} email={email} setScreen={setScreen} />
+              <Register setResendVerify={setResendVerify} setEmail={setEmail} setError={setError} setScreen={setScreen} />
+              <Login setError={setError} setScreen={setScreen} />
+              <ForgotPassword setEmail={setEmail} setError={setError} setScreen={setScreen} />
+              <PasswordSent email={email} setScreen={setScreen} />
+              <SetPassword setError={setError} isPasswordReset={isPasswordReset} passwordID={passwordID} setScreen={setScreen} />
+              <PasswordUpdated setScreen={setScreen} />
+              </div>
             </div>
           </div>
         </div>

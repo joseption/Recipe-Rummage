@@ -8,12 +8,17 @@
         "server": "nodemon server.js",
         "client": "cd frontend && npm start && cd ..",
         "start": "concurrently \"npm run server\" \"npm run client\"",
-        "setup": "cd frontend && npm i && cd .. && npm i"
+        "setup": "cd frontend && npm i && cd .. && npm i",
+        ":start": "node index.js",
+        "heroku-postbuild": "cd frontend && npm install --only=dev && npm install && npm run build"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
         "@babel/helper-module-imports": "^7.18.6",
+        "@capacitor/android": "^3.6.0",
+        "@capacitor/cli": "^3.6.0",
+        "@capacitor/core": "^3.6.0",
         "@fortawesome/fontawesome-svg-core": "^6.1.1",
         "@fortawesome/free-regular-svg-icons": "^6.1.1",
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
@@ -30,7 +35,7 @@
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^4.7.0",
         "node-fetch": "^3.2.6",
-        "nodemon": "^2.0.18",
+        "nodemon": "^2.0.19",
         "passport": "^0.6.0",
         "request": "^2.88.2",
         "uuid": "^8.3.2"

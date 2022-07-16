@@ -319,23 +319,35 @@ app.post('/api/add-grocery-item', async (req, res, next) =>
   // incoming: user_id, item
   // outgoing: error
 	
-  const { user_id, item } = req.body;
+  await validateToken(req, res, async () => {
+    const { user_id, item } = req.body;
+    let error = '';
 
-  const newItem = {item:item,user_id:user_id};
-  let error = '';
+    try
+    {
+      const db = client.db("LargeProject");
+      let items;
+      const result = await db.collection('Item').insertOne({item:item, user_id:ObjectId(user_id)});
+      if (result)
+        items = await db.collection('Item').find({_id:ObjectId(result.insertedId)}).toArray();
+      
+      if (items.length > 0) {
+        res.status(200).json({error: '', result:items[0]});
+      }
+      else {
+        res.status(400).json({error: 'Item could not be retrieved'});
+      }
 
-  try
-  {
-    const db = client.db("LargeProject");
-    const result = db.collection('Item').insertOne(newItem);
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
+      return;
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
 
-  let ret = { error: error };
-  res.status(200).json(ret);
+    let ret = { error: error };
+    res.status(200).json(ret);
+  });
 });
 
 app.post('/api/update-grocery-item', async (req, res, next) => 
@@ -343,32 +355,26 @@ app.post('/api/update-grocery-item', async (req, res, next) =>
   // incoming: user_id, item, updatedItem
   // outgoing: error
 
-  const { user_id,item, updatedItem } = req.body;
+  await validateToken(req, res, async () => {
+    const { id, item } = req.body;
 
+    let error = '';
 
-  let error = '';
+    try
+    {
+      const db = client.db("LargeProject");
+      const filter = { _id: ObjectId(id) };
+      const update = { $set: { item:item } };
+      await db.collection("Item").updateOne(filter, update);
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
 
-  try
-  {
-    const db = client.db("LargeProject");
-    const result = db.collection("Item");
-    const filter = { item:item, user_id:user_id };
-    const updateDoc = {
-      $set: {
-        item: updatedItem
-      },
-    };
-    const out = result.updateOne(filter, updateDoc);
-
-
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
-
-  let ret = { error: error };
-  res.status(200).json(ret);
+    let ret = { error: error };
+    res.status(200).json(ret);
+  });
 });
 
 app.post('/api/remove-grocery-item', async (req, res, next) => 
@@ -376,22 +382,23 @@ app.post('/api/remove-grocery-item', async (req, res, next) =>
   // incoming: user_id, item
   // outgoing: itemToDelete, error
 
-  const { user_id,item } = req.body;
-  const itemToDelete = { item:item,user_id:user_id };
-  let error = '';
+  await validateToken(req, res, async () => {
+    const { id } = req.body;
+    let error = '';
 
-  try
-  {
-    const db = client.db("LargeProject");
-    const result = db.collection('Item').deleteOne(itemToDelete);
-  }
-  catch(e)
-  {
-    error = e.toString();
-  }
+    try
+    {
+      const db = client.db("LargeProject");
+      await db.collection('Item').deleteOne({ _id:ObjectId(id) });
+    }
+    catch(e)
+    {
+      error = e.toString();
+    }
 
-  let ret = { itemToDelete:item,error: error };
-  res.status(200).json(ret);
+    let ret = { error: error };
+    res.status(200).json(ret);
+  });
 });
 
 app.post('/api/search-grocery-item', async (req, res, next) => 
@@ -399,23 +406,42 @@ app.post('/api/search-grocery-item', async (req, res, next) =>
   // incoming: user_id, search
   // outgoing: results[], error
 
-  let error = '';
+  await validateToken(req, res, async () => {
+    let error = '';
 
-  const { user_id, search } = req.body;
+    const { user_id} = req.body;
+    const fetchItems = {user_id:user_id };
 
-  let _search = search.trim();
-  
-  const db = client.db("LargeProject");
-  const results = await db.collection('Item').find({"item":{$regex:_search+'.*', $options:'r'}}).toArray();
-  
-  let _ret = [];
-  for( var i=0; i<results.length; i++ )
-  {
-    _ret.push( results[i].item );
-  }
-  
-  let ret = {results:_ret, error:error};
-  res.status(200).json(ret);
+    
+    const db = client.db("LargeProject");
+    const results = await db.collection('Item').find(fetchItems).toArray();
+    let _ret = [];
+    for( var i=0; i<results.length; i++ )
+    {
+      _ret.push( results[i].item );
+    }
+    
+    let ret = {results:_ret, error:error};
+    res.status(200).json(ret);
+  });
+});
+
+app.post('/api/get-grocery-items', async (req, res, next) => 
+{
+  // incoming: user_id
+  // outgoing: results[], error
+
+  await validateToken(req, res, async () => {
+    let error = '';
+
+    const { user_id} = req.body;
+    
+    const db = client.db("LargeProject");
+    const results = await db.collection('Item').find({user_id:ObjectId(user_id)}).sort({item:1}).toArray();
+    
+    let ret = {results:results, error:error};
+    res.status(200).json(ret);
+  });
 });
 
 
