@@ -1,3 +1,6 @@
+
+// -------------------NOT USED -------------------------- //
+// -------------------NOT NECESSARY -------------------------- //
 const request = require('request');
 const cheerio = require('cheerio');
 

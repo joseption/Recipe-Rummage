@@ -9,6 +9,7 @@ const GroceryItem = (props) =>
     const max_title = 300;
     var name; // input
     var card;
+    const selected_grocery_items_set = new Set();
     const [sName,setName] = useState('');
     const [isEditing,setIsEditing] = useState(false);
 
@@ -76,8 +77,9 @@ const GroceryItem = (props) =>
     const toggleSelected = () => {
         if (props.mode === "search") {
             props.item.isSelected = !props.item.isSelected;
-            if (props.item.isSelected)
+            if (props.item.isSelected){
                 card.classList.add("grocery-item-selected");
+            }
             else
                 card.classList.remove("grocery-item-selected");
         }

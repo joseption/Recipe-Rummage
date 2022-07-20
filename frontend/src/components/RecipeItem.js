@@ -8,8 +8,8 @@ const RecipeItem = (props) =>
 {
     const max_title = 300;
     const max_desc = 500;
-    var name; // input
-    var description; // input
+    var recipe_name; // input
+    var recipe_category; // input
     var card;
     const [sName,setName] = useState('');
     const [sDesc,setDesc] = useState('');
@@ -17,13 +17,13 @@ const RecipeItem = (props) =>
     const [isFavorite,setIsFavorite] = useState(false);
 
     useEffect(() => {
-        setName(props.item.name.substring(0, max_title));
-        setDesc(props.item.description.substring(0, max_desc) + "...");
+        setName(props.item.recipe_name);
+        setDesc(props.item.recipe_category[0]);
         if (isEditing) {
-            description.value = props.item.description;
-            name.value = props.item.name;
+            recipe_category.value = props.item.recipe_category[0];
+            recipe_name.value = props.item.recipe_name;
         }
-    }, [description, name, props.item, isEditing]);
+    }, [recipe_category, recipe_name, props.item, isEditing]);
 
     const showEditor = () => {
         setIsEditing(true);
@@ -31,8 +31,8 @@ const RecipeItem = (props) =>
 
     const cancelItem = (e) => {
         setIsEditing(false);
-        name.value = props.item.name;
-        description.value = props.item.description;
+        recipe_name.value = props.item.recipe_name;
+        recipe_category.value = props.item.recipe_category;
     };
 
     const removeItem = async (e) => {
@@ -58,23 +58,23 @@ const RecipeItem = (props) =>
     const updateItem = async (e) => {
         var cCard = card;
         cCard.classList.remove("recipe-item-error");
-        name.classList.remove("input-error");
-        description.classList.remove("input-error");
+        recipe_name.classList.remove("input-error");
+        recipe_category.classList.remove("input-error");
 
         let hasError = false;
-        if (!name.value) {
+        if (!recipe_name.value) {
             hasError = true;
-            name.classList.add("input-error");
+            recipe_name.classList.add("input-error");
         }
-        if (!description.value) {
+        if (!recipe_category.value) {
             hasError = true;
-            description.classList.add("input-error");
+            recipe_category.classList.add("input-error");
         }
         if (hasError) {
             return;
         }
 
-        let obj = {id:props.item._id, name:name.value, description:description.value};
+        let obj = {id:props.item._id, recipe_name:recipe_name.value, recipe_category:recipe_category.value};
             let js = JSON.stringify(obj);
             await fetch(`${config.URL}/api/update-favorite`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json', 'authorization': Constant.token}}).then(async ret => {
@@ -86,8 +86,8 @@ const RecipeItem = (props) =>
                 else
                 {                       
                     cCard.classList.remove("recipe-item-error");
-                    props.item.name = obj.name;
-                    props.item.description = obj.description;
+                    props.item.recipe_name = obj.recipe_name;
+                    props.item.recipe_category = obj.recipe_category;
                     props.update();
                     setIsEditing(false);
                 }
@@ -101,14 +101,16 @@ const RecipeItem = (props) =>
 
         let obj = {
             user_id:Constant.user_id,
-            name:props.item.name,
-            description:props.item.description,
-            url:props.item.url,
-            image_url:props.item.image_url
+            recipe_name:props.item.recipe_name,
+            recipe_category: props.item.recipe_category[0],
+            cook_time: props.item.cook_time,
+            serving_size: props.item.serving_size,
+            recipe_url:props.item.recipe_url,
+            image_url:props.item.image_url[0]
         };
 
         let js = JSON.stringify(obj);
-        await fetch(`${config.URL}/api/add-recipe`,
+        await fetch(`${config.URL}/api/add-favorite`,
         {method:'POST',body:js,headers:{'Content-Type': 'application/json', 'authorization': Constant.token}}).then(async ret => {
             let res = JSON.parse(await ret.text());
             if (res.error)
@@ -136,7 +138,7 @@ const RecipeItem = (props) =>
         };
 
         let js = JSON.stringify(obj);
-        await fetch(`${config.URL}/api/remove-recipe`,
+        await fetch(`${config.URL}/api/remove-favorite`,
         {method:'POST',body:js,headers:{'Content-Type': 'application/json', 'authorization': Constant.token}}).then(async ret => {
             let res = JSON.parse(await ret.text());
             if (res.error)
@@ -154,14 +156,14 @@ const RecipeItem = (props) =>
     return(
         <div ref={(c) => card = c} className="recipe-card">
             <div className="recipe-image">
-                <img src={props.item.image_url} alt={sName} />
+                <img src={props.item.image_url[0]} alt={sName} />
             </div>
             <div className="recipe-content">
                 <div className="recipe-header">
                     <div className="recipe-title-content">
                         {!isEditing ?
                             (<div className="recipe-title">{sName}</div>) :
-                            (<textarea className="recipe-title-edit" ref={(c) => name = c} />)
+                            (<textarea className="recipe-title-edit" ref={(c) => recipe_name = c} />)
                         }
                     </div>
                     <div className="recipe-btn-container">
@@ -199,8 +201,8 @@ const RecipeItem = (props) =>
                 </div>
                 <div className="recipe-desc-content">
                     {!isEditing ?
-                        (<div className="recipe-description">{sDesc} <a rel="noreferrer" target="_blank" href={props.item.url}>Read more</a></div>) :
-                        (<textarea className="recipe-desc-edit" ref={(c) => description = c} />)
+                        (<div className="recipe-category">{sDesc} <a rel="noreferrer" target="_blank" href={props.item.recipe_url}>Read more</a></div>) :
+                        (<textarea className="recipe-desc-edit" ref={(c) => recipe_category = c} />)
                     }
                 </div>
             </div>
