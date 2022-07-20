@@ -108,7 +108,7 @@ const RecipeList = (props) =>
             <div className="generic-header-content">
             <div className="recipe-list-title">{props.title}</div>
                 {props.isMobile ?
-                        <FontAwesomeIcon onClick={() => props.setToggleView(!props.toggleView)} className="view-switch" icon={solid('arrow-left')} />
+                        <FontAwesomeIcon onClick={() => props.setToggleView(!props.toggleView)} className="view-switch" icon={solid('window-restore')} />
                     : null }
             </div>
             <div className="recipe-search-input-container"><input className="recipe-list-search" type="text" onChange={(e) => setSearch(e.target.value)} placeholder={props.searchPlaceHolder} /></div>
