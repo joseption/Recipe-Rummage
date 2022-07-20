@@ -54,7 +54,7 @@ const GroceryList = (props) =>
                 setIsLoading(false);
             });
         }
-    })
+    }, [props, itemsLoaded])
 
     useEffect(() => {
         if (!isLoaded) {

@@ -72,14 +72,14 @@ const RecipeList = (props) =>
                     if (res.results.length === 0)
                         prop.setRecipeError("no_recipes");
                     else
-                        setFavorites(res.results);
+                        prop.setFavorites(res.results);
                         
                     setMessage('');
                 }
                 setIsLoading(false);
             });
         }
-    })
+    }, [props, favoritesLoaded, setFavoritesLoaded])
 
     const navSearch = () => {
         window.location.href = "/search";
@@ -124,7 +124,7 @@ const RecipeList = (props) =>
             {props.mode === "profile" ? /* Keep this top part for favorite recipes only */
             (<div className="recipe-list-items">
                 {!props.recipeError && favorites ?
-                    (favorites.filter(x => (x.name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()))).map((item, key) => {
+                    (favorites.filter(x => (x.recipe_name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()))).map((item, key) => {
                         return <RecipeItem update={() => update()} deleteItem={() => deleteItem(item._id)} key={key} item={item} mode={props.mode} />
                     }))
                     :
@@ -148,7 +148,7 @@ const RecipeList = (props) =>
             : /* Keep this bottom part for searched recipes only */
             (<div className="recipe-list-items">
                 {!props.recipeError || (props.recipeError === "get_started" && props.results > 0) ?
-                    (props.results.filter(x => (x.name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()))).map((item, key) => {
+                    (props.results.filter(x => (x.recipe_name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()))).map((item, key) => {
                         return <RecipeItem key={key} item={item} mode={props.mode} />
                     }))
                     :

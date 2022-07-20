@@ -35,7 +35,7 @@ const SearchPage = (props) =>
         let list = "";
         items.forEach(x => {
             if (x.isSelected)
-                list += x.item.replace(/ /g, "%2C") + "%2C";
+                list += x.item + ',';
         });
         let idx = list.lastIndexOf("%2C");
         if (idx > -1)
@@ -43,11 +43,11 @@ const SearchPage = (props) =>
 
         if (list) {    
             let obj = {
-                items:list,
+                selected_grocery_items:list,
             };
-    
             let js = JSON.stringify(obj);
-            await fetch(`${config.URL}/api/search-recipes`,
+
+            await fetch(`${config.URL}/api/recipe-search`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json', 'authorization': Constant.token}}).then(async ret => {
                 let res = JSON.parse(await ret.text());
                 if (res.error)
@@ -60,17 +60,17 @@ const SearchPage = (props) =>
                 }
                 else
                 {   
-                    if (res.result.length > 0) {
-                        let list = [];
-                        for (let i = 0; i < res.result.length; i++) {
-                            list.push({
-                                name: res.result[i].title,
-                                image_url: res.result[i].image,
-                                description: res.result[i].summary,
-                                url: res.result[i].source_url
-                            });
-                        }
-                        setResults(list);
+                    if (res.results.length > 0) {
+                        // let list = [];
+                        // for (let i = 0; i < res.length; i++) {
+                        //     list.push({
+                        //         category: res[i].recipe_category,
+                        //         name: res[i].recipe_name,
+                        //         image_url: res[i].image_url,
+                        //         url: res[i].recipe_url
+                        //     });
+                        // }
+                        setResults(res.results);
                     } 
                     else {
                         setRecipeError("no_results")
