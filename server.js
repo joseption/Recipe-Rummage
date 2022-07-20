@@ -36,6 +36,8 @@ client.connect();
 
 
 const path = require('path');           
+const { match } = require('assert');
+const { pipeline } = require('stream');
 const PORT = process.env.PORT || 5000;  
 const app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -409,8 +411,8 @@ app.post('/api/search-grocery-item', async (req, res, next) =>
   await validateToken(req, res, async () => {
     let error = '';
 
-    const { user_id} = req.body;
-    const fetchItems = {user_id:user_id };
+    const { user_id } = req.body;
+    const fetchItems = { user_id:user_id };
 
     
     const db = client.db("LargeProject");
@@ -421,7 +423,7 @@ app.post('/api/search-grocery-item', async (req, res, next) =>
       _ret.push( results[i].item );
     }
     
-    let ret = {results:_ret, error:error};
+    let ret = { results:_ret, error:error };
     res.status(200).json(ret);
   });
 });
@@ -479,7 +481,42 @@ app.post('/api/add-favorite', async (req, res, next) =>
   });
 });
 
-// Remove Recipe (Search Page)
+
+
+// fetches a random 50 recipes from Recipe collection
+app.post('/api/get-recipes', async (req, res, next) =>
+{
+  // incoming: 
+  // outgoing: 50 randomly selected recipes
+
+  await validateToken(req, res, async () => {
+    let error = '';
+    let random_recipes = [];
+
+
+    const db = client.db("LargeProject")
+
+    const pipeline = 
+    [
+      // random sample of 50 documents
+      { '$sample': { 'size': 50 } },
+      // hides _id
+      { '$project': { '_id': 0 } }
+    ];
+
+    db.collection('Recipe').aggregate(pipeline).toArray(function(err, results){
+      if(err) throw err;
+      for(var i = 0; i < results.length; i++ )
+      {
+        random_recipes.push(results[i]);
+      }
+    let ret = { results: random_recipes, error: error };
+    res.status(200).json(ret);
+    });
+  });
+});
+
+// Remove Favorite (Search Page)
 app.post('/api/remove-favorite', async (req, res, next) =>
 {
   // incoming: id
@@ -504,10 +541,80 @@ app.post('/api/remove-favorite', async (req, res, next) =>
   });
 });
 
-// Search Page
-app.post('/api/search-recipes', async (req, res, next) => 
+// searches for recipes based on user's pantry selection (Search Page)
+app.post('/api/recipe-search', async (req, res, next) => 
 {
-  res.status(400).json({error:'Not ready!'})
+  // incoming: selected_grocery_items
+  // outgoing: matching_recipes
+
+  // await validateToken(req, res, async () => {
+    const { selected_grocery_items } = req.body;
+    console.log(selected_grocery_items);
+    let error = '';
+    let matching_recipes = [];
+
+    var to_search;
+    to_search = selected_grocery_items.split(',');
+    
+
+    const db = client.db("LargeProject")
+
+    // query for recipes that contain the selected grocery items
+    const options = {
+      // sort returned documents alphabetically by recipe_name
+      sort : { recipe_name: 1 },
+      // hide _id in each returned document
+      projection: { _id: 0 }
+    };
+
+ 
+    var query = 
+    {
+      $or:
+      [ 
+        {"ingredients": {  $in: [ to_search.value ] }},
+        {"recipe_tags": { $in: [ to_search.value ] }}
+      ]
+    };
+
+    var pipeline = 
+    [
+      {
+        '$match': {
+          $or:
+          [ 
+            {"ingredients": {  $in: [ to_search[0] ] }},
+            {"recipe_tags": { $in: [ to_search[0] ] }}
+          ]
+        }
+      }, {
+        '$sort': {
+          'recipe_name': 1
+        }
+      }, {
+        '$project': {
+          '_id': 0
+        }
+      },
+    ];
+    db.collection('Recipe').aggregate(pipeline).toArray(function(err, results){
+      if(err) throw err;
+      for(i = 0; i < results.length; i++ )
+      {
+        matching_recipes.push(results[i]);
+      }
+
+
+    let ret = { results: matching_recipes, error: error };
+    res.status(200).json(ret);
+    });
+  // });
+});
+
+// Search Page
+// app.post('/api/search-recipes', async (req, res, next) => 
+// {
+//   res.status(400).json({error:'Not ready!'})
   // // incoming: items
   // // outgoing: results[], error
 
@@ -579,7 +686,7 @@ app.post('/api/search-recipes', async (req, res, next) =>
   // {
   //   error = e.toString();
   // }
-});
+// });
 
 //--------------------Profile Page API--------------------//
 // Update Recipe (Profile Page)

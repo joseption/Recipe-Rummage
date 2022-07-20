@@ -36,7 +36,7 @@ function addRecipe(recipe_list) {
 // crawler for yummly.com
 // creates object array of 
 function crawl() {
-  var website = "https://www.yummly.com";
+  var website = "https://www.yummly.com/";
 
   let start = 0;
   if (process.argv[2])
