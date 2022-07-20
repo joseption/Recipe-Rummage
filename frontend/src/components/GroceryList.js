@@ -199,7 +199,7 @@ const GroceryList = (props) =>
             <div className="generic-header-content">
                 <div className="grocery-list-title">My Pantry</div>
                 {props.isMobile ?
-                    <FontAwesomeIcon onClick={() => props.setToggleView(!props.toggleView)} className="view-switch" icon={solid('arrow-left')} />
+                    <FontAwesomeIcon onClick={() => props.setToggleView(!props.toggleView)} className="view-switch" icon={solid('window-restore')} />
                 : null }
             </div>
             <div className="grocery-list-overview">
