@@ -28,20 +28,16 @@ const SearchPage = (props) =>
       })
 
     const getSearchResults = async () => {
-
         // Fix this how ever it needs to work with API
         setError('');
         setRecipeError('');
-        let list = "";
+        let list = [];
         items.forEach(x => {
             if (x.isSelected)
-                list += x.item + ',';
+                list.push(x.item.toLowerCase());
         });
-        let idx = list.lastIndexOf("%2C");
-        if (idx > -1)
-            list = list.substring(0, idx);
 
-        if (list) {    
+        if (list.length > 0) {    
             let obj = {
                 selected_grocery_items:list,
             };
@@ -61,16 +57,8 @@ const SearchPage = (props) =>
                 else
                 {   
                     if (res.results.length > 0) {
-                        // let list = [];
-                        // for (let i = 0; i < res.length; i++) {
-                        //     list.push({
-                        //         category: res[i].recipe_category,
-                        //         name: res[i].recipe_name,
-                        //         image_url: res[i].image_url,
-                        //         url: res[i].recipe_url
-                        //     });
-                        // }
                         setResults(res.results);
+                        setToggleView(true);
                     } 
                     else {
                         setRecipeError("no_results")

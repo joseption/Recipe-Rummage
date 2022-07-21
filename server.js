@@ -455,9 +455,8 @@ app.post('/api/add-favorite', async (req, res, next) =>
   // outgoing: error
 
   await validateToken(req, res, async () => {
-    const { user_id, recipe_category, recipe_name, ingredients, cook_time, serving_size, recipe_tags, recipe_url, image_url } = req.body;
-    const newItem = { user_id:user_id, recipe_category:recipe_category, recipe_name:recipe_name, ingredients:ingredients, cook_time:cook_time, serving_size:serving_size, recipe_tags:recipe_tags, recipe_url:recipe_url, image_url:image_url };
-
+    const { item_id, user_id, recipe_category, recipe_name, ingredients, cook_time, serving_size, recipe_tags, recipe_url, image_url } = req.body;
+    const newItem = { item_id:ObjectId(item_id), user_id:ObjectId(user_id), recipe_category:recipe_category, recipe_name:recipe_name, ingredients:ingredients, cook_time:cook_time, serving_size:serving_size, recipe_tags:recipe_tags, recipe_url:recipe_url, image_url:image_url };
 
     let error = '';
 
@@ -516,99 +515,40 @@ app.post('/api/get-recipes', async (req, res, next) =>
   });
 });
 
-// Remove Favorite (Search Page)
-app.post('/api/remove-favorite', async (req, res, next) =>
-{
-  // incoming: id
-  // outgoing: error
-
-  await validateToken(req, res, async () => {
-    const { id  } = req.body;
-    let error = '';
-
-    try
-    {
-      const db = client.db("LargeProject");
-      await db.collection('Favorite').deleteOne({ _id: ObjectId(id) });
-    }
-    catch(e)
-    {
-      error = e.toString();
-    }
-
-    let ret = { error: error };
-    res.status(200).json(ret);
-  });
-});
-
 // searches for recipes based on user's pantry selection (Search Page)
 app.post('/api/recipe-search', async (req, res, next) => 
 {
   // incoming: selected_grocery_items
   // outgoing: matching_recipes
 
-  // await validateToken(req, res, async () => {
+  await validateToken(req, res, async () => {
     const { selected_grocery_items } = req.body;
-    console.log(selected_grocery_items);
     let error = '';
-    let matching_recipes = [];
-
-    var to_search;
-    to_search = selected_grocery_items.split(',');
-    
+    let matching_recipes = [];   
 
     const db = client.db("LargeProject")
 
-    // query for recipes that contain the selected grocery items
-    const options = {
-      // sort returned documents alphabetically by recipe_name
-      sort : { recipe_name: 1 },
-      // hide _id in each returned document
-      projection: { _id: 0 }
-    };
-
- 
-    var query = 
+  var pipeline = 
     {
       $or:
       [ 
-        {"ingredients": {  $in: [ to_search.value ] }},
-        {"recipe_tags": { $in: [ to_search.value ] }}
+        {"ingredients": { $in: selected_grocery_items }},
+        {"recipe_tags": { $in: selected_grocery_items }}
       ]
     };
-
-    var pipeline = 
-    [
-      {
-        '$match': {
-          $or:
-          [ 
-            {"ingredients": {  $in: [ to_search[0] ] }},
-            {"recipe_tags": { $in: [ to_search[0] ] }}
-          ]
-        }
-      }, {
-        '$sort': {
-          'recipe_name': 1
-        }
-      }, {
-        '$project': {
-          '_id': 0
-        }
-      },
-    ];
-    db.collection('Recipe').aggregate(pipeline).toArray(function(err, results){
-      if(err) throw err;
+    db.collection('Recipe').find(pipeline).toArray(function(err, results){
+      if (err)
+        throw err;
+        
       for(i = 0; i < results.length; i++ )
       {
         matching_recipes.push(results[i]);
       }
 
-
-    let ret = { results: matching_recipes, error: error };
-    res.status(200).json(ret);
+      let ret = { results: matching_recipes, error: error };
+      res.status(200).json(ret);
     });
-  // });
+  });
 });
 
 // Search Page
@@ -696,13 +636,13 @@ app.post('/api/update-favorite', async (req, res, next) =>
   // outgoing: error
 
   await validateToken(req, res, async () => {
-    const { id, name, description } = req.body;
+    const { id, recipe_category, recipe_name } = req.body;
     const db = client.db("LargeProject");  
     const filter = { "_id": ObjectId(id) };
     let error = '';
     try
     {
-      const update = { $set: { name:name, description:description } };
+      const update = { $set: { recipe_name:recipe_name, recipe_category:recipe_category } };
       await db.collection('Favorite').updateOne(filter, update);
     }
     catch(e)
@@ -720,19 +660,22 @@ app.post('/api/update-favorite', async (req, res, next) =>
 });
   
 
-// Remove Recipe (Profile Page)
+// Remove Recipe (Profile/Search Page)
 app.post('/api/remove-favorite', async (req, res, next) => 
 {
   // incoming: id
   // outgoing: error
 
   await validateToken(req, res, async () => {
-    const { id } = req.body;
+    const { id, user_id, item_id } = req.body;
     const db = client.db("LargeProject");  
     let error = '';
     try
     {
-      db.collection('Favorite').deleteOne({ _id: ObjectId(id) });
+      if (id)
+        db.collection('Favorite').deleteOne({ _id: ObjectId(id) });
+      else
+        db.collection('Favorite').deleteOne({ user_id: ObjectId(user_id), item_id: ObjectId(item_id) });
     }
     catch(e)
     {

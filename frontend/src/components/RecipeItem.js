@@ -14,19 +14,26 @@ const RecipeItem = (props) =>
     const [sName,setName] = useState('');
     const [sDesc,setDesc] = useState('');
     const [isEditing,setIsEditing] = useState(false);
-    const [isFavorite,setIsFavorite] = useState(false);
+
 
     useEffect(() => {
         setName(props.item.recipe_name);
-        setDesc(props.item.recipe_category[0]);
+        setDesc(props.item.recipe_category ? props.item.recipe_category : "");
         if (isEditing) {
-            recipe_category.value = props.item.recipe_category[0];
+            recipe_category.value = props.item.recipe_category;
             recipe_name.value = props.item.recipe_name;
         }
-    }, [recipe_category, recipe_name, props.item, isEditing]);
+    }, [recipe_category, recipe_name, props.item, isEditing, props.mode]);
 
     const showEditor = () => {
         setIsEditing(true);
+    }
+
+    const updateFavoriteStatus = (isFav) => {
+        if (isFav)
+            props.addToFavorites(props.item);
+        else
+            props.removeFromFavorites(props.item);
     }
 
     const cancelItem = (e) => {
@@ -94,19 +101,33 @@ const RecipeItem = (props) =>
             });
     };
 
+    const isFavorite = () => { 
+        let fave = false;
+        props.favorites.forEach(x => {
+            if (x.item_id === props.item._id || x._id === props.item._id) {
+                fave = true;
+            }
+        });
+
+        return fave;
+    }
+
     const addToFavorites = async (e) => {
-        setIsFavorite(true);
+        updateFavoriteStatus(true);
         var cCard = card;
         cCard.classList.remove("recipe-item-error");
 
         let obj = {
+            item_id:props.item._id,
             user_id:Constant.user_id,
             recipe_name:props.item.recipe_name,
-            recipe_category: props.item.recipe_category[0],
+            recipe_category: props.item.recipe_category,
             cook_time: props.item.cook_time,
             serving_size: props.item.serving_size,
             recipe_url:props.item.recipe_url,
-            image_url:props.item.image_url[0]
+            image_url:props.item.image_url,
+            ingredients:props.item.ingredients,
+            recipe_tags:props.item.recipe_tags
         };
 
         let js = JSON.stringify(obj);
@@ -116,25 +137,26 @@ const RecipeItem = (props) =>
             if (res.error)
             {
                 cCard.classList.add("recipe-item-error");
-                setIsFavorite(false);
+                updateFavoriteStatus(false);
             }
             else
             {               
-                props.item._id = res.id        
+                props.item.insert_id = res.id        
                 cCard.classList.remove("recipe-item-error");
             }
         });
     };
 
     const removeFromFavorites = async (e) => {
-        setIsFavorite(false);
+        updateFavoriteStatus(false);
         var cCard = card;
         cCard.classList.remove("recipe-item-error");
         if (!props.item._id)
             return;
 
         let obj = {
-            id:props.item._id,
+            user_id:Constant.user_id,
+            item_id:props.item._id
         };
 
         let js = JSON.stringify(obj);
@@ -144,7 +166,7 @@ const RecipeItem = (props) =>
             if (res.error)
             {
                 cCard.classList.add("recipe-item-error");
-                setIsFavorite(true);
+                updateFavoriteStatus(true);
             }
             else
             {                       
@@ -154,7 +176,7 @@ const RecipeItem = (props) =>
     };
 
     return(
-        <div ref={(c) => card = c} className="recipe-card">
+        <div ref={(c) => card = c} style={props.style} className="recipe-card">
             <div className="recipe-image">
                 <img src={props.item.image_url[0]} alt={sName} />
             </div>
@@ -191,7 +213,7 @@ const RecipeItem = (props) =>
                         </div>
                         :
                         (<div className="recipe-btn recipe-like">
-                            {!isFavorite ?
+                            {!isFavorite() ?
                                 (<FontAwesomeIcon onClick={(e) => addToFavorites(e)} icon={regular("thumbs-up")} />) :
                                 (<FontAwesomeIcon onClick={(e) => removeFromFavorites(e)} icon={solid("thumbs-up")} />)
                             }
@@ -201,7 +223,7 @@ const RecipeItem = (props) =>
                 </div>
                 <div className="recipe-desc-content">
                     {!isEditing ?
-                        (<div className="recipe-category">{sDesc} <a rel="noreferrer" target="_blank" href={props.item.recipe_url}>Read more</a></div>) :
+                        (<div className="recipe-category">{sDesc} <a rel="noreferrer" target="_blank" href={props.item.recipe_url}>Full Recipe</a></div>) :
                         (<textarea className="recipe-desc-edit" ref={(c) => recipe_category = c} />)
                     }
                 </div>
