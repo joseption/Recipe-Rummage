@@ -61,12 +61,12 @@ const SearchPage = (props) =>
                 {   
                     if (res.results.length > 0) {
                         setResults(res.results);
-                        setToggleView(true);
                     } 
                     else {
                         setRecipeError("no_results")
                     }                
                     setError('');
+                    setToggleView(true);
                 }
             });
         }
