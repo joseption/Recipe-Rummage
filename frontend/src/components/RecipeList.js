@@ -56,7 +56,7 @@ const RecipeList = (props) =>
                 props.setRecipeError("get_started");
             }
             else
-                prop.setRecipeError("");
+                props.setRecipeError("");
 
             let obj = {user_id: Constant.user_id};
             let js = JSON.stringify(obj);
@@ -68,6 +68,7 @@ const RecipeList = (props) =>
                 {
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         setMessage("You appear to be signed out, try logging out and back in again");
+                        props.setRecipeError("signed_out");
                     }
                     else
                         setMessage(res.error);
@@ -197,8 +198,9 @@ const RecipeList = (props) =>
                 {!props.recipeError && favorites && anyShowing() ?
                     (mappedItems())
                     :
+                    props.recipeError !== "signed_out" ? 
                     (<div className="recipe-list-msg">
-                        {props.recipeError !== "no_recipes" && !anyShowing() ?
+                        {!props.recipeError && !anyShowing() && favorites.length > 0 ?
                             (noLocalResultsMsg.split('\n').map((line, i) => {
                                 return <span key={i}>{line}<br/></span>
                             }))
@@ -217,7 +219,7 @@ const RecipeList = (props) =>
                                 <FontAwesomeIcon icon={solid("search")} />
                             </div>
                         </div> : null}
-                    </div>)
+                    </div>) : null
                 }
             </div>)
             : /* Keep this bottom part for searched recipes only */
@@ -238,7 +240,7 @@ const RecipeList = (props) =>
                             }))
                         : null
                         }
-                        {props.recipeError !== "get_started" && !anyShowing() ?
+                        {props.recipeError !== "no_results" && props.recipeError !== "get_started" && !anyShowing() ?
                             (noLocalResultsMsg.split('\n').map((line, i) => {
                                 return <span key={i}>{line}<br/></span>
                             }))

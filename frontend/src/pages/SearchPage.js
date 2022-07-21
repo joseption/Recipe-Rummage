@@ -13,6 +13,7 @@ const SearchPage = (props) =>
     const [items,setItems] = useState([]);
     const [toggleView,setToggleView] = useState(false);
     const [isMobile,setIsMobile] = useState(false);
+    const [searchAll,setSearchAll] = useState(false);
 
     const handleResize = () => {
         if (window.innerWidth <= 1080) {
@@ -40,6 +41,7 @@ const SearchPage = (props) =>
         if (list.length > 0) {    
             let obj = {
                 selected_grocery_items:list,
+                search_all:searchAll
             };
             let js = JSON.stringify(obj);
 
@@ -50,6 +52,7 @@ const SearchPage = (props) =>
                 {
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         setError("You appear to be signed out, try logging out and back in again");
+                        setRecipeError("signed_out");
                     }
                     else
                         setError(res.error);
@@ -77,7 +80,7 @@ const SearchPage = (props) =>
             <Navigation mode="search" />           
             <div className="main-content-container">
                 <div className="grocery-list">
-                    <GroceryList toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setItems={setItems} items={items} setGroceryError={setGroceryError} groceryError={groceryError} error={error} search={() => getSearchResults()} mode={"search"} />
+                    <GroceryList searchAll={searchAll} setSearchAll={setSearchAll} toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setItems={setItems} items={items} setGroceryError={setGroceryError} groceryError={groceryError} error={error} search={() => getSearchResults()} mode={"search"} />
                 </div>
                 <div className="recipe-list">
                     <RecipeList toggleView={toggleView} setToggleView={setToggleView} isMobile={isMobile} setRecipeError={setRecipeError} recipeError={recipeError} results={results} searchPlaceHolder={"Search Recipes"} title={"Recipe Results"} mode={"search"} />

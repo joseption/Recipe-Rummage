@@ -522,20 +522,32 @@ app.post('/api/recipe-search', async (req, res, next) =>
   // outgoing: matching_recipes
 
   await validateToken(req, res, async () => {
-    const { selected_grocery_items } = req.body;
+    const { selected_grocery_items, search_all } = req.body;
     let error = '';
     let matching_recipes = [];   
-
     const db = client.db("LargeProject")
 
-  var pipeline = 
-    {
-      $or:
-      [ 
-        {"ingredients": { $in: selected_grocery_items }},
-        {"recipe_tags": { $in: selected_grocery_items }}
-      ]
-    };
+    let pipeline;
+    if (search_all) {
+      pipeline = 
+      {
+        $or:
+        [ 
+          {"ingredients": { $all: selected_grocery_items }},
+          {"recipe_tags": { $all: selected_grocery_items }}
+        ]
+      };
+    }
+    else {
+      pipeline = 
+      {
+        $or:
+        [ 
+          {"ingredients": { $in: selected_grocery_items }},
+          {"recipe_tags": { $in: selected_grocery_items }}
+        ]
+      };
+    }
     db.collection('Recipe').find(pipeline).toArray(function(err, results){
       if (err)
         throw err;
@@ -636,13 +648,13 @@ app.post('/api/update-favorite', async (req, res, next) =>
   // outgoing: error
 
   await validateToken(req, res, async () => {
-    const { id, recipe_category, recipe_name } = req.body;
+    const { id, ingredients, recipe_name } = req.body;
     const db = client.db("LargeProject");  
     const filter = { "_id": ObjectId(id) };
     let error = '';
     try
     {
-      const update = { $set: { recipe_name:recipe_name, recipe_category:recipe_category } };
+      const update = { $set: { recipe_name:recipe_name, ingredients:ingredients } };
       await db.collection('Favorite').updateOne(filter, update);
     }
     catch(e)

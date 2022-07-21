@@ -9,8 +9,9 @@ const RecipeItem = (props) =>
     const max_title = 300;
     const max_desc = 500;
     var recipe_name; // input
-    var recipe_category; // input
+    var ingredients; // input
     var card;
+    var recipeItems;
     const [sName,setName] = useState('');
     const [sDesc,setDesc] = useState('');
     const [isEditing,setIsEditing] = useState(false);
@@ -18,12 +19,28 @@ const RecipeItem = (props) =>
 
     useEffect(() => {
         setName(props.item.recipe_name);
-        setDesc(props.item.recipe_category ? props.item.recipe_category : "");
-        if (isEditing) {
-            recipe_category.value = props.item.recipe_category;
-            recipe_name.value = props.item.recipe_name;
+        if (props.item.ingredients) {
+            if (recipeItems) {
+                recipeItems.innerHTML = "";
+                props.item.ingredients.forEach(x => {
+                    let div = document.createElement("div");
+                    div.innerText = x.trim();
+                    div.classList.add("recipe-ingredient");
+                    recipeItems.append(div);
+                });
+            }
         }
-    }, [recipe_category, recipe_name, props.item, isEditing, props.mode]);
+        if (isEditing) {
+            recipe_name.value = props.item.recipe_name;
+            let items = "";
+            props.item.ingredients.forEach(x => {
+                if (x.trim() !== "")
+                    items += x.trim() + ", ";
+            });
+            items = items.substring(0, items.length - 2);
+            ingredients.value = items ? items : props.item.ingredients ? props.item.ingredients : "";
+        }
+    }, [ingredients, recipe_name, props.item, isEditing, props.mode, recipeItems]);
 
     const showEditor = () => {
         setIsEditing(true);
@@ -39,7 +56,7 @@ const RecipeItem = (props) =>
     const cancelItem = (e) => {
         setIsEditing(false);
         recipe_name.value = props.item.recipe_name;
-        recipe_category.value = props.item.recipe_category;
+        ingredients.value = props.item.ingredients;
     };
 
     const removeItem = async (e) => {
@@ -66,22 +83,35 @@ const RecipeItem = (props) =>
         var cCard = card;
         cCard.classList.remove("recipe-item-error");
         recipe_name.classList.remove("input-error");
-        recipe_category.classList.remove("input-error");
+        ingredients.classList.remove("input-error");
 
         let hasError = false;
         if (!recipe_name.value) {
             hasError = true;
             recipe_name.classList.add("input-error");
         }
-        if (!recipe_category.value) {
+        if (!ingredients.value) {
             hasError = true;
-            recipe_category.classList.add("input-error");
+            ingredients.classList.add("input-error");
         }
         if (hasError) {
             return;
         }
 
-        let obj = {id:props.item._id, recipe_name:recipe_name.value, recipe_category:recipe_category.value};
+        let savedIngredients = ingredients.value.split(",");
+        for (let i = 0; i < savedIngredients.length; i++) {
+            if (savedIngredients[i].trim() === "") {
+                // Get rid of empty strings
+                savedIngredients.splice(i, 1);
+                i--;
+            }
+            else
+                savedIngredients[i] = savedIngredients[i].trim();
+        }
+        // Only allow one of each ingredient
+        savedIngredients = [...new Set(savedIngredients)];
+
+        let obj = {id:props.item._id, recipe_name:recipe_name.value, ingredients:savedIngredients};
             let js = JSON.stringify(obj);
             await fetch(`${config.URL}/api/update-favorite`,
             {method:'POST',body:js,headers:{'Content-Type': 'application/json', 'authorization': Constant.token}}).then(async ret => {
@@ -94,7 +124,7 @@ const RecipeItem = (props) =>
                 {                       
                     cCard.classList.remove("recipe-item-error");
                     props.item.recipe_name = obj.recipe_name;
-                    props.item.recipe_category = obj.recipe_category;
+                    props.item.ingredients = obj.ingredients;
                     props.update();
                     setIsEditing(false);
                 }
@@ -121,12 +151,11 @@ const RecipeItem = (props) =>
             item_id:props.item._id,
             user_id:Constant.user_id,
             recipe_name:props.item.recipe_name,
-            recipe_category: props.item.recipe_category,
+            ingredients: props.item.ingredients,
             cook_time: props.item.cook_time,
             serving_size: props.item.serving_size,
             recipe_url:props.item.recipe_url,
             image_url:props.item.image_url,
-            ingredients:props.item.ingredients,
             recipe_tags:props.item.recipe_tags
         };
 
@@ -223,8 +252,14 @@ const RecipeItem = (props) =>
                 </div>
                 <div className="recipe-desc-content">
                     {!isEditing ?
-                        (<div className="recipe-category">{sDesc} <a rel="noreferrer" target="_blank" href={props.item.recipe_url}>Full Recipe</a></div>) :
-                        (<textarea className="recipe-desc-edit" ref={(c) => recipe_category = c} />)
+                        (<div className="recipe-desc-contain">
+                            <div ref={(c) => recipeItems = c} className="recipe-category"></div>
+                            <div className="recipe-url"><a rel="noreferrer" target="_blank" href={props.item.recipe_url}>Full Recipe <FontAwesomeIcon icon={solid("arrow-up-right-from-square")} /></a></div>
+                        </div>) :
+                        (<div className="recipe-editor-container">
+                            <textarea className="recipe-desc-edit" ref={(c) => ingredients = c} />
+                            <div className="recipe-edit-note">Use a comma to separate ingredients</div>
+                        </div>)
                     }
                 </div>
             </div>
