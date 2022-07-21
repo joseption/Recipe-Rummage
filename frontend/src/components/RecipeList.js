@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Constant, config } from '../Constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { faV } from '@fortawesome/free-solid-svg-icons';
 
 const RecipeList = (props) =>
 {
@@ -51,7 +52,11 @@ const RecipeList = (props) =>
             let prop = props;
             setIsLoading(true);
             setFavoritesLoaded(true);
-            prop.setRecipeError("");
+            if (props.mode === "search") {
+                props.setRecipeError("get_started");
+            }
+            else
+                props.setRecipeError("");
 
             let obj = {user_id: Constant.user_id};
             let js = JSON.stringify(obj);
@@ -63,16 +68,19 @@ const RecipeList = (props) =>
                 {
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         setMessage("You appear to be signed out, try logging out and back in again");
+                        props.setRecipeError("signed_out");
                     }
                     else
                         setMessage(res.error);
                 }
                 else
                 {
-                    if (res.results.length === 0)
-                        prop.setRecipeError("no_recipes");
+                    if (res.results.length === 0) {
+                        if (props.mode === "profile")
+                            props.setRecipeError("no_recipes");
+                    }
                     else
-                        prop.setFavorites(res.results);
+                        setFavorites(res.results);
                         
                     setMessage('');
                 }
@@ -85,15 +93,27 @@ const RecipeList = (props) =>
         window.location.href = "/search";
     }
 
+    const removeFromFavorites = (item) => {
+        item.isFavorite = false;
+        let faves = favorites.slice();
+        let idx = faves.findIndex(x => x.item_id === item._id || x._id === item._id);
+        if (idx > -1) {
+            faves.splice(idx, 1)
+            setFavorites(faves);
+        }
+    };
+
+    const addToFavorites = useCallback((item) => {
+        item.isFavorite = true;
+        let faves = favorites.slice();
+        faves.push(item);
+        setFavorites(faves);
+    });
+
     useEffect(() => {
         if (!isLoaded) {
             setIsLoaded(true);
-            if (props.mode === "profile") { //only fetch favorites if on profile
-                getFavorites();
-            }
-            else {
-                props.setRecipeError("get_started");
-            }
+            getFavorites();
         }
         if (!props.toggleView && props.isMobile) {
             container.parentElement.style.display = "none";
@@ -101,7 +121,59 @@ const RecipeList = (props) =>
         else {
             container.parentElement.style.display = "block";
         }
-    }, [getFavorites, props, isLoaded, container]);
+    }, [getFavorites, props, isLoaded, container, favorites, addToFavorites]);
+
+    const filteredItems = () => {
+        let res;
+
+        if (props.mode === "profile") {
+            res = favorites
+            if (res)
+                res = res.slice();
+        }
+        else {
+            res = props.results.slice();
+            if (res)
+                res = res.slice();
+        }
+
+        let ret = [];
+        if (res) {
+            ret = res.filter(x => {
+                if (x && ((x.recipe_name && x.recipe_name.toLowerCase().includes(search.toLowerCase())) ||
+                    (x.recipe_tags && x.recipe_tags.some(x => x.toLowerCase().includes(search.toLowerCase()))) ||
+                    (x.ingredients && x.ingredients.some(x => x.toLowerCase().includes(search.toLowerCase()))))) {
+                    x.display = "flex";
+                }
+                else {
+                    x.display = "none";
+                }
+
+                return x;
+            })
+        }
+
+        return ret;
+    }
+
+    const mappedItems = () => {
+        return filteredItems().map((item, key) => {
+            return <RecipeItem update={() => update()} favorites={favorites} deleteItem={() => deleteItem(item._id)} addToFavorites={(item) => addToFavorites(item)} removeFromFavorites={(item) => removeFromFavorites(item)} style={{display: item.display}} key={key} item={item} mode={props.mode} />
+        });
+    };
+
+    const anyShowing = () => {
+        var items = filteredItems();
+        if (items) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].display !== "none") {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
 
     return(
         <div ref={(c) => container = c} className="recipe-container">
@@ -123,12 +195,17 @@ const RecipeList = (props) =>
             (<div className="error-msg">{message}</div>) : null}
             {props.mode === "profile" ? /* Keep this top part for favorite recipes only */
             (<div className="recipe-list-items">
-                {!props.recipeError && favorites ?
-                    (favorites.filter(x => (x.recipe_name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()))).map((item, key) => {
-                        return <RecipeItem update={() => update()} deleteItem={() => deleteItem(item._id)} key={key} item={item} mode={props.mode} />
-                    }))
+                {!props.recipeError && favorites && anyShowing() ?
+                    (mappedItems())
                     :
+                    props.recipeError !== "signed_out" ? 
                     (<div className="recipe-list-msg">
+                        {!props.recipeError && !anyShowing() && favorites.length > 0 ?
+                            (noLocalResultsMsg.split('\n').map((line, i) => {
+                                return <span key={i}>{line}<br/></span>
+                            }))
+                        : null
+                        }              
                         {props.recipeError === "no_recipes" ?
                             (noRecipesMsg.split('\n').map((line, i) => {
                                 return <span key={i}>{line}<br/></span>
@@ -142,15 +219,13 @@ const RecipeList = (props) =>
                                 <FontAwesomeIcon icon={solid("search")} />
                             </div>
                         </div> : null}
-                    </div>)
+                    </div>) : null
                 }
             </div>)
             : /* Keep this bottom part for searched recipes only */
             (<div className="recipe-list-items">
-                {!props.recipeError || (props.recipeError === "get_started" && props.results > 0) ?
-                    (props.results.filter(x => (x.recipe_name.toLowerCase().includes(search.toLowerCase()) || x.description.toLowerCase().includes(search.toLowerCase()))).map((item, key) => {
-                        return <RecipeItem key={key} item={item} mode={props.mode} />
-                    }))
+                {(!props.recipeError || (props.recipeError === "get_started" && props.results > 0)) && anyShowing() ?
+                    (mappedItems())
                     :
                     (<div className="recipe-list-msg">
                         {props.recipeError === "no_results" ?
@@ -159,14 +234,14 @@ const RecipeList = (props) =>
                             }))
                         : null
                         }
-                        {props.recipeError === "no_local_results" ?
-                            (noLocalResultsMsg.split('\n').map((line, i) => {
+                        {props.recipeError === "get_started" ?
+                            (getStarted.split('\n').map((line, i) => {
                                 return <span key={i}>{line}<br/></span>
                             }))
                         : null
                         }
-                        {props.recipeError === "get_started" ?
-                            (getStarted.split('\n').map((line, i) => {
+                        {props.recipeError !== "no_results" && props.recipeError !== "get_started" && !anyShowing() ?
+                            (noLocalResultsMsg.split('\n').map((line, i) => {
                                 return <span key={i}>{line}<br/></span>
                             }))
                         : null

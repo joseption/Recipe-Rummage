@@ -194,6 +194,14 @@ const GroceryList = (props) =>
         return false;
     };
 
+    const setSearchType = (e) => {
+        if (e.target.id !== 'search_type') {
+            e.preventDefault();
+            props.setSearchAll(!props.searchAll);
+            document.getElementById("search_type").click();
+        }
+    }
+
     return(
         <div ref={(c) => container = c} className="groceries-container">
             <div className="generic-header-content">
@@ -213,7 +221,21 @@ const GroceryList = (props) =>
                                 </div>
                             </div>)
                             :
-                            (<div onClick={() => props.search()} className="btn btn-success grocery-list-search-btn">Find Recipes</div>)
+                            (<div>
+                                <div onClick={() => props.search()} className="btn btn-success grocery-list-search-btn">Find Recipes</div>
+                                <div onClick={(e) => setSearchType(e)}>
+                                    <label className="switch">
+                                        <div className="slider-content" >
+                                            <input id="search_type" type="checkbox" />
+                                            <span className="slider round"></span>
+                                        </div>
+                                        {!props.searchAll ?
+                                            (<span>Contains at least one item</span>) :
+                                            (<span>Contains all items</span>)
+                                        }
+                                    </label>
+                                </div>
+                            </div>)
                         }
                     </div>
                     <div className="error-msg grocery-list-error-msg">{props.error || error}</div>
