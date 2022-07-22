@@ -158,7 +158,7 @@ const RecipeList = (props) =>
 
     const mappedItems = () => {
         return filteredItems().map((item, key) => {
-            return <RecipeItem update={() => update()} favorites={favorites} deleteItem={() => deleteItem(item._id)} addToFavorites={(item) => addToFavorites(item)} removeFromFavorites={(item) => removeFromFavorites(item)} style={{display: item.display}} key={key} item={item} mode={props.mode} />
+            return <RecipeItem setRemoveError={props.setRemoveError} setRemove={props.setRemove} setName={props.setName} setType={props.setType} update={() => update()} favorites={favorites} deleteItem={() => deleteItem(item._id)} addToFavorites={(item) => addToFavorites(item)} removeFromFavorites={(item) => removeFromFavorites(item)} style={{display: item.display}} key={key} item={item} mode={props.mode} />
         });
     };
 

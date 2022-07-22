@@ -15,9 +15,10 @@ const RecipeItem = (props) =>
     const [sName,setName] = useState('');
     const [sDesc,setDesc] = useState('');
     const [isEditing,setIsEditing] = useState(false);
-
+    const [id,setId] = useState('');
 
     useEffect(() => {
+        setId(crypto.randomUUID());
         setName(props.item.recipe_name);
         if (props.item.ingredients) {
             if (recipeItems) {
@@ -60,7 +61,7 @@ const RecipeItem = (props) =>
     };
 
     const removeItem = async (e) => {
-        var cCard = card;
+        var cCard = document.getElementById(id);
         cCard.classList.remove("recipe-item-error");
         let obj = {id:props.item._id};
             let js = JSON.stringify(obj);
@@ -70,11 +71,16 @@ const RecipeItem = (props) =>
                 if (res.error)
                 {
                     cCard.classList.add("recipe-item-error");
+                    props.setRemoveError(true);
                 }
                 else
                 {                       
                     cCard.classList.remove("recipe-item-error");
                     props.deleteItem();
+                    props.setRemoveError(false);
+                    props.setName('');
+                    props.setType('');
+                    props.setRemove(() => {});
                 }
             }); 
     };
@@ -129,6 +135,13 @@ const RecipeItem = (props) =>
                     setIsEditing(false);
                 }
             });
+    };
+
+    const startRemoval = () => {
+        props.setName(sName);
+        props.setType("recipes");
+        props.setRemove({go: removeItem});
+        props.setRemoveError(false);
     };
 
     const isFavorite = () => { 
@@ -205,7 +218,7 @@ const RecipeItem = (props) =>
     };
 
     return(
-        <div ref={(c) => card = c} style={props.style} className="recipe-card">
+        <div id={id} ref={(c) => card = c} style={props.style} className="recipe-card">
             <div className="recipe-image">
                 <img src={props.item.image_url[0]} alt={sName} />
             </div>
@@ -225,7 +238,7 @@ const RecipeItem = (props) =>
                                 <div onClick={() => showEditor()} className="recipe-btn recipe-edit">
                                 <FontAwesomeIcon icon={solid("pencil")} />
                                 </div>
-                                <div onClick={(e) => removeItem(e)} className="recipe-btn recipe-remove">
+                                <div onClick={(e) => startRemoval()} className="recipe-btn recipe-remove">
                                     <FontAwesomeIcon icon={solid("xmark")} />
                                 </div>
                             </div>
