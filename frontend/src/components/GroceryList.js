@@ -178,7 +178,7 @@ const GroceryList = (props) =>
 
     const mappedItems = () => {
         return filteredItems().map((item, key) => {
-            return <GroceryItem toggleItems={(e) => toggleItems(e)} style={{display: item.display}} setMessage={setError} update={() => update()} deleteItem={() => deleteItem(item._id)} key={key} item={item} mode={props.mode} />
+            return <GroceryItem setRemoveError={props.setRemoveError} setRemove={props.setRemove} setName={props.setName} setType={props.setType} toggleItems={(e) => toggleItems(e)} style={{display: item.display}} setMessage={setError} update={() => update()} deleteItem={() => deleteItem(item._id)} key={key} item={item} mode={props.mode} />
         });
     }
 

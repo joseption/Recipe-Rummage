@@ -12,8 +12,10 @@ const GroceryItem = (props) =>
     const selected_grocery_items_set = new Set();
     const [sName,setName] = useState('');
     const [isEditing,setIsEditing] = useState(false);
+    const [id,setId] = useState('');
 
     useEffect(() => {
+        setId(crypto.randomUUID());
         setName(props.item.item.substring(0, max_title));
         if (isEditing) {
             name.value = props.item.item;
@@ -49,7 +51,7 @@ const GroceryItem = (props) =>
 
     const removeItem = async (e) => {
         props.setMessage('');
-        var cCard = card;
+        var cCard = document.getElementById(id);
         cCard.classList.remove("grocery-item-error");
         let obj = {id:props.item._id};
             let js = JSON.stringify(obj);
@@ -65,11 +67,16 @@ const GroceryItem = (props) =>
                         props.setMessage(res.error);
                         cCard.classList.add("grocery-item-error");
                     }
+                    props.setRemoveError(true);
                 }
                 else
                 {                       
                     cCard.classList.remove("grocery-item-error");
                     props.deleteItem();
+                    props.setRemoveError(false);
+                    props.setName('');
+                    props.setType('');
+                    props.setRemove(() => {});
                 }
             }); 
     };
@@ -135,8 +142,15 @@ const GroceryItem = (props) =>
         }
     }
 
+    const startRemoval = () => {
+        props.setName(sName);
+        props.setType("pantry");
+        props.setRemove({go: removeItem});
+        props.setRemoveError(false);
+    };
+
     return(
-        <div onClick={() => toggleSelected()} ref={(c) => card = c} style={props.style} className={"grocery-card"}>
+        <div id={id} onClick={() => toggleSelected()} ref={(c) => card = c} style={props.style} className={"grocery-card"}>
             <div className="grocery-content">
                 <div className="grocery-header">
                     <div className="grocery-title-content">
@@ -153,7 +167,7 @@ const GroceryItem = (props) =>
                                 <div onClick={() => showEditor()} className="grocery-btn grocery-edit">
                                 <FontAwesomeIcon icon={solid("pencil")} />
                                 </div>
-                                <div onClick={(e) => removeItem(e)} className="grocery-btn grocery-remove">
+                                <div onClick={(e) => startRemoval()} className="grocery-btn grocery-remove">
                                     <FontAwesomeIcon icon={solid("xmark")} />
                                 </div>
                             </div>
