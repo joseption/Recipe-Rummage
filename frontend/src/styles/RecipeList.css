@@ -9,7 +9,7 @@
     border-radius: 4px;
     outline: none;
     border: solid 1px var(--color-border);
-    margin: 15px 0;
+    margin-bottom: 15px;
 }
 
 .recipe-list-title {
@@ -66,4 +66,11 @@
     padding: 20px;
     border-radius: 10px;
     border: solid 1px var(--color-border-accent);
+}
+
+@media only screen and (max-width: 1000px) {
+    .recipe-list {
+        border-radius: 0px;
+        border: none;
+    }
 }

@@ -11,7 +11,6 @@
 
 .nav-container {
     background-color: var(--color-white-pass);
-    margin-bottom: 20px;
     border-bottom: solid 1px var(--color-border-accent);
     font-size: 1.25em;
 }
@@ -100,7 +99,7 @@
     display: none;
 }
 
-@media only screen and (max-width: 1080px) {
+@media only screen and (max-width: 1000px) {
     .nav-img-hidden {
         display: block;
     }

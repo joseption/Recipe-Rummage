@@ -99,6 +99,13 @@
     overflow: hidden;
 }
 
+@media only screen and (max-width: 1000px) {
+    .grocery-list {
+        border-radius: 0px;
+        border: none;
+    }
+}
+
 .groceries-container {
     height: 100%;
     display: flex;

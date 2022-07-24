@@ -563,83 +563,6 @@ app.post('/api/recipe-search', async (req, res, next) =>
   });
 });
 
-// Search Page
-// app.post('/api/search-recipes', async (req, res, next) => 
-// {
-//   res.status(400).json({error:'Not ready!'})
-  // // incoming: items
-  // // outgoing: results[], error
-
-  // try
-  // { 
-  //   const { items } = req.body;
-  //   // ============== WARNING ==============
-  //   // === DO NOT ALTER OR REMOVE BELOW! ===
-  //   // =============== START ===============
-  //   const result_limit = 10; // DO NOT ADJUST
-  //   // THIS IS NOT THE CORRECT LINK, WE NEED TO FIND A BETTER SOLUTION
-  //   const url = `https://${process.env.RAPID_API_HOST}/recipes/complexSearch?query=pasta&cuisine=italian&instructionsRequired=true&fillIngredients=false&addRecipeInformation=false&ignorePantry=false&number=${result_limit}&limitLicense=false&ranking=2`;
-  //   const db = client.db("LargeProject");
-  //   const date = new Date(new Date().toDateString());
-  //   const results = await db.collection('Requests').find({ "date" : date }).toArray();
-  //   if (results.length == 0) {
-  //     db.collection('Requests').insertOne({date:date, count:0});
-  //     results = await db.collection('Requests').find({ "date" : date }).toArray();
-  //   }
-
-  //   if (results.length > 0) {
-  //     // Put the count at 40 just to be safe (DO NOT ADJUST COUNT)
-  //     if (results[0].count >= 40) { // DO NOT ADJUST
-  //       res.status(400).json({error:'Max searches reached'})
-  //       return;
-  //     }
-
-  //     const filter = { "_id": results[0]._id };
-  //     let update = { $set: { count: results[0].count + 3 } }; // DO NOT EDIT -> 1 call = 3
-  //     db.collection('Requests').updateOne(filter, update);
-  //   }
-  //   else {
-  //     res.status(400).json({error:'Unable to search'})
-  //     return;
-  //   }
-
-  //   // KILL SWITCH
-  //   //res.status(400).json({error:'Service not enabled'})
-  //   //return;
-  //   // KILL SWITCH
-
-  //   // ============== WARNING ==============
-  //   // === DO NOT ALTER OR REMOVE ABOVE! ===
-  //   // ================ END ================
-
-  //   if (!items) {
-  //     res.status(400).json({error: 'Please add items before searching'});
-  //     return;
-  //   }
-  
-  //   const options = {
-  //       method: 'GET',
-  //       headers: {
-  //           'X-RapidAPI-Key': process.env.RAPID_API_KEY,
-  //           'X-RapidAPI-Host': process.env.RAPID_API_HOST
-  //       }
-  //   };
-  
-  //   await fetch(url, options)
-  //       .then(response => response.json())
-  //       .then(response => {
-  //         res.status(200).json({error:'', result:response})
-  //       })
-  //       .catch(err => {
-  //         res.status(400).json({error: 'There was an error retrieving search results'});
-  //       });
-  // }
-  // catch(e)
-  // {
-  //   error = e.toString();
-  // }
-// });
-
 //--------------------Profile Page API--------------------//
 // Update Recipe (Profile Page)
 app.post('/api/update-favorite', async (req, res, next) => 
@@ -754,6 +677,13 @@ app.listen(PORT, () =>
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production') 
 {
+  // Enforce https
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https')
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    else
+      next()
+  })
   // Set static folder
   app.use(express.static('frontend/build'));
 

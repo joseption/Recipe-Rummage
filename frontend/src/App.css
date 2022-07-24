@@ -4,6 +4,11 @@
   text-align: center;
 }
 
+#root {
+  height: 100vh;
+  height: -webkit-fill-available;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -125,15 +130,17 @@
   max-width: 1000px;
   display: flex;
   flex-direction: row;
-  margin: auto;
   gap: 20px;
   height: calc(100vh - 85px);
-  padding: 0px 20px;
+  margin: 0 auto;
 }
 
-@media only screen and (max-width: 1080px) {
+@media only screen and (max-width: 1000px) {
   .main-content-container {
-    width: calc(100vw - 40px);
+    width: 100vw;
+    padding: 0px;
+    height: unset;
+    overflow: auto;
   }
 
   body {
@@ -154,8 +161,17 @@ textarea {
 .main-page-container {
   background-color: var(--color-border);
   background-image: url("./images/food.png");
-  min-height: calc(100vh - 20px);
-  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100vh;
+  height: -webkit-fill-available;
+}
+
+@media only screen and (max-width: 1000px) {
+  .main-page-container {
+      gap: 0px;
+  }
 }
 
 ::-webkit-scrollbar-thumb {
