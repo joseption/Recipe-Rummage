@@ -141,6 +141,7 @@
     padding: 0px;
     height: unset;
     overflow: auto;
+    flex-grow: 1;
   }
 
   body {
