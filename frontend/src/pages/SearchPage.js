@@ -16,7 +16,7 @@ const SearchPage = (props) =>
     const [searchAll,setSearchAll] = useState(false);
 
     const handleResize = () => {
-        if (window.innerWidth <= 1080) {
+        if (window.innerWidth <= 1000) {
             setIsMobile(true)
         } else {
             setIsMobile(false)

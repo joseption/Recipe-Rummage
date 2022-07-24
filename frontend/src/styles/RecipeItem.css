@@ -49,7 +49,7 @@
 }
 
 .recipe-btn {
-    background-color: white;
+    background-color: #fdfdfd;
     border-radius: 50px;
     font-size: 1.15em;
     width: 27px;
@@ -71,7 +71,7 @@
     padding: 3px 5px;
     border: solid 1px #dbdbdb;
     cursor: default;
-    line-break: anywhere;
+    white-space: break-spaces;
 }
 
 .recipe-editor-container {
@@ -137,7 +137,7 @@ textarea {
 
 .recipe-edit-note {
     color: var(--color-border);
-    font-size: 12px;
+    font-size: 10px;
     text-align: end;
 }
 
