@@ -96,7 +96,7 @@ const LoginPage = (props) =>
               <div ref={(c) => content = c} className="login-workflow-content">
               <RegisterSent resendVerify={resendVerify} email={email} setScreen={setScreen} />
               <Register setResendVerify={setResendVerify} setEmail={setEmail} setError={setError} setScreen={setScreen} />
-              <Login setError={setError} setScreen={setScreen} />
+              <Login error={error} setError={setError} setScreen={setScreen} />
               <ForgotPassword setEmail={setEmail} setError={setError} setScreen={setScreen} />
               <PasswordSent email={email} setScreen={setScreen} />
               <SetPassword setError={setError} isPasswordReset={isPasswordReset} passwordID={passwordID} setScreen={setScreen} />

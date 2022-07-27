@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Constant, config } from '../Constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
-import { faV } from '@fortawesome/free-solid-svg-icons';
 
 const RecipeList = (props) =>
 {
@@ -47,9 +46,12 @@ const RecipeList = (props) =>
         }
     };
 
+    const accTimeout = () => {
+        window.location.href = "/login?timeout=yes";
+    }
+
     const getFavorites = useCallback(async () => {
         if (!favoritesLoaded) {
-            let prop = props;
             setIsLoading(true);
             setFavoritesLoaded(true);
             if (props.mode === "search") {
@@ -69,6 +71,7 @@ const RecipeList = (props) =>
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         setMessage("You appear to be signed out, try logging out and back in again");
                         props.setRecipeError("signed_out");
+                        accTimeout();
                     }
                     else
                         setMessage(res.error);

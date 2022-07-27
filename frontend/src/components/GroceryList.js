@@ -18,6 +18,10 @@ const GroceryList = (props) =>
     const [search,setSearch] = useState('');
     const [isLoaded,setIsLoaded] = useState(false);
 
+    const accTimeout = () => {
+        window.location.href = "/login?timeout=yes";
+    }
+
     const getItems = useCallback(async () => {
         setError('');
         setMessage('');
@@ -37,6 +41,7 @@ const GroceryList = (props) =>
                 {
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         setMessage("You appear to be signed out, try logging out and back in again");
+                        accTimeout();
                     }
                     else
                         setMessage(res.error);
@@ -137,6 +142,7 @@ const GroceryList = (props) =>
             {
                 if (res.error === "Unauthorized" || res.error === "Forbidden") {
                     setError("You appear to be signed out, try logging out and back in again");
+                    accTimeout();
                 }
                 else
                 setError(res.error);

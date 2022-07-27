@@ -9,7 +9,6 @@ const GroceryItem = (props) =>
     const max_title = 300;
     var name; // input
     var card;
-    const selected_grocery_items_set = new Set();
     const [sName,setName] = useState('');
     const [isEditing,setIsEditing] = useState(false);
     const [id,setId] = useState('');
@@ -49,6 +48,10 @@ const GroceryItem = (props) =>
         name.value = props.item.name;
     };
 
+    const accTimeout = () => {
+        window.location.href = "/login?timeout=yes";
+    }
+
     const removeItem = async (e) => {
         props.setMessage('');
         var cCard = document.getElementById(id);
@@ -62,6 +65,7 @@ const GroceryItem = (props) =>
                 {
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         props.setMessage("You appear to be signed out, try logging out and back in again");
+                        accTimeout();
                     }
                     else {
                         props.setMessage(res.error);
@@ -115,6 +119,7 @@ const GroceryItem = (props) =>
                 {
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         props.setMessage("You appear to be signed out, try logging out and back in again");
+                        accTimeout();
                     }
                     else {
                         cCard.classList.add("grocery-item-error");

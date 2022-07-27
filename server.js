@@ -46,7 +46,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 function siteURL() {
-  return (process.env.NODE_ENV === "development") ? process.env.DEV_URL : process.env.PROD_URL;
+  return (process.env.NODE_ENV !== 'production') ? process.env.DEV_URL : process.env.PROD_URL;
 }
 
 function generateAccessToken(email) {
@@ -80,26 +80,32 @@ app.post('/api/login', async (req, res, next) =>
   // outgoing: id, error
 
   const { email, password } = req.body;
+  const e_mail = email.toLowerCase();
 
-  const db = client.db("LargeProject");
-  const results = await db.collection('User').find({email:email}).toArray();
+  try {
+    const db = client.db("LargeProject");
+    const results = await db.collection('User').find({email:e_mail}).toArray();
 
-  if (results.length > 0)
-  {
-    bcrypt.compare(password, results[0].password).then(isMatch => {
-      if (isMatch) {
-        let id = results[0]._id;
-        let user_id = results[0].user_id;
+    if (results.length > 0)
+    {
+      bcrypt.compare(password, results[0].password).then(isMatch => {
+        if (isMatch) {
+          let id = results[0]._id;
+          let user_id = results[0].user_id;
 
-        const token = generateAccessToken({email});
-        res.status(200).json({ token: `Bearer ${token}`, id:id, user_id: user_id, email:email, error:''});
-      } else {
-        res.status(400).json({ error: 'The email or password did not match' });
-      }
-    });
+          const token = generateAccessToken({e_mail});
+          res.status(200).json({ token: `Bearer ${token}`, id:id, user_id: user_id, email:e_mail, error:''});
+        } else {
+          res.status(400).json({ error: 'The email or password did not match' });
+        }
+      });
+    }
+    else {
+      res.status(400).json({ error:'The username or password did not match' });
+    }
   }
-  else {
-    res.status(400).json({ error:'The username or password did not match' });
+  catch (e) {
+    res.status(400).json({ error:'An error occurred' });
   }
 });
 
@@ -110,14 +116,15 @@ app.post('/api/register', async (req, res, next) =>
 	
   let error = "";
   const { email } = req.body;
+  const e_mail = email.toLowerCase();
   const activate_id = uuid();
-  const newItem = {email:email, active:false, activate_id:activate_id};
+  const newItem = {email:e_mail, active:false, activate_id:activate_id};
 
   try
   {
     let existing;
     const db = client.db("LargeProject");
-    const accounts = await db.collection('User').find({email:email}).toArray();
+    const accounts = await db.collection('User').find({email:e_mail}).toArray();
     
     if (accounts && accounts.length > 0)
     {
@@ -134,7 +141,7 @@ app.post('/api/register', async (req, res, next) =>
     if (!existing)
       db.collection('User').insertOne(newItem);
     else {
-      const filter = { "email": email};
+      const filter = { "email": e_mail};
       let update = { $set: { activate_id: activate_id } };  
       db.collection('User').updateOne(filter, update);
     }
@@ -143,7 +150,7 @@ app.post('/api/register', async (req, res, next) =>
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   
     const msg = {
-      to: req.body.email,
+      to: req.body.email.toLowerCase(),
       from: 'support@joseption.com',
       subject: 'Account Activation',
       html: 'Hey there, thank you for your interest in finding some awesome recipes! Let\'s finish getting your account setup.<br /><br />Please click the following link to activate your account: ' + siteURL() + "/login?activate_id=" + activate_id,
@@ -247,14 +254,14 @@ app.post('/api/send-password-reset', async (req, res, next) =>
   // outgoing: send email
 
   const { email } = req.body;
-
+  const e_mail = email.toLowerCase();
   if (!validateEmail(email)) {
     res.status(400).json({error:'Invalid Email'});
     return;
   }
 
   const db = client.db("LargeProject");
-  const results = await db.collection('User').find({email}).toArray();
+  const results = await db.collection('User').find({email:e_mail}).toArray();
 
   let reset_id = "";
   let user_id = -1;
@@ -287,7 +294,7 @@ app.post('/api/send-password-reset', async (req, res, next) =>
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     
       const msg = {
-        to: req.body.email,
+        to: req.body.email.toLowerCase(),
         from: 'support@joseption.com',
         subject: 'Reset Account Password',
         html: 'We noticed you\'re having some trouble logging in, sorry about that! Let\'s see if we can get you logged back in.<br /><br />Please click the following link to reset your account password: ' + siteURL() + "/login?reset_id=" + reset_id,
