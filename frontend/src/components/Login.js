@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { config } from '../Constants'
 import { validateEmail } from '../Helper';
 
@@ -6,6 +7,7 @@ function Login(props)
 {
     var email;
     var loginPassword;
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const checkDisabledBtn = useCallback((type) => {
         let emailError = !(validateEmail(email.value));
@@ -22,15 +24,23 @@ function Login(props)
     const [disabled, setDisabled] = useState('');
     const [message, setMessage] = useState('');
 
-    useEffect(() => {
-        var info = JSON.parse(localStorage.getItem('user_data'));
-        if (info && !!info.id) {
-            window.location.href = '/profile';
+    useEffect(() => {    
+        var mTimeout = searchParams.get("timeout");
+        if (mTimeout !== "yes") {
+            var info = JSON.parse(localStorage.getItem('user_data'));
+            if (info && !!info.id) {
+                window.location.href = '/profile';
+            }
         }
 
         checkDisabledBtn(email);
         checkDisabledBtn(loginPassword);
-    }, [email, loginPassword, checkDisabledBtn]);
+
+        var timeout = searchParams.get("timeout");
+        if (timeout === "yes") {
+          setMessage("Your session has expired, please login");
+        }
+    }, [email, loginPassword, checkDisabledBtn, searchParams]);
 
     const handleChange = (type) => {
         checkDisabledBtn(type);

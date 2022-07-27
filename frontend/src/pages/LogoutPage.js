@@ -2,11 +2,10 @@ import { useEffect } from "react";
 
 function LogoutPage(props)
 {    
-
     useEffect(() => {
-        localStorage.removeItem("user_data")
-        window.location.href = '/login';
-    }, []);
+        localStorage.removeItem("user_data");
+        window.location.href = "/login";
+    });
 
     return(
         <div className="logout-text">

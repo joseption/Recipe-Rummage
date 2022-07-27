@@ -26,7 +26,11 @@ const SearchPage = (props) =>
     useEffect(() => {
         handleResize();
         window.addEventListener("resize", handleResize);
-      })
+    })
+
+    const accTimeout = () => {
+        window.location.href = "/login?timeout=yes";
+    }
 
     const getSearchResults = async () => {
         // Fix this how ever it needs to work with API
@@ -53,6 +57,7 @@ const SearchPage = (props) =>
                     if (res.error === "Unauthorized" || res.error === "Forbidden") {
                         setError("You appear to be signed out, try logging out and back in again");
                         setRecipeError("signed_out");
+                        accTimeout();
                     }
                     else
                         setError(res.error);
