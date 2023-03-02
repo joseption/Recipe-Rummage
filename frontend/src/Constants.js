@@ -1,5 +1,5 @@
 const prod = {
-     URL: "https://poosd.herokuapp.com"
+     URL: "https://reciperummage.herokuapp.com"
 };
 
 const dev = {
